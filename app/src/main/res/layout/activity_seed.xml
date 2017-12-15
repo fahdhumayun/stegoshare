@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.fahd.stegoshare.SeedActivity"
+    android:background="@drawable/app_bg_new"
+    >
+
+    <!--
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/steghideToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:minHeight="?attr/actionBarSize">
+
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Stegoshares"
+            android:textColor="#ffffff"
+            android:textSize="30sp" />
+
+    </android.support.v7.widget.Toolbar>
+    !-->
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select the total number of words."
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginTop="30dp"
+        android:background="@color/colorAppRed"
+        android:padding="10dp"
+        android:layout_marginBottom="4dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.example.fahd.stegoshare.CustomTextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="Total of "
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            />
+
+        <Spinner
+            android:id="@+id/wordLength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            />
+
+        <com.example.fahd.stegoshare.CustomTextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="words."
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select the required number of shares,
+and the total number of shares."
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginTop="30dp"
+        android:background="@color/colorAppRed"
+        android:padding="10dp"
+        android:layout_marginBottom="4dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.example.fahd.stegoshare.CustomTextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="Require"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            />
+
+        <Spinner
+            android:id="@+id/requiredShares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:textAlignment="center"
+            android:visibility="visible" />
+
+        <com.example.fahd.stegoshare.CustomTextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"
+            android:text="shares from "
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            />
+
+        <Spinner
+            android:id="@+id/totalShares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter the words below."
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginTop="40dp"
+        android:background="@color/colorAppRed"
+        android:padding="10dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/leftButton"
+            style="@android:style/Widget.Material.ImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onLeftClick"
+            app:srcCompat="@mipmap/ic_keyboard_arrow_left_black_48dp" />
+
+        <TextView
+            android:id="@+id/seedCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:textSize="20sp"
+            android:fontFamily="monospace"
+            />
+
+        <EditText
+            android:id="@+id/seedWord"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:ems="10"
+            android:hint="Seed"
+            android:inputType="textPersonName"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+            android:textSize="20sp"
+            android:fontFamily="monospace"
+            />
+
+        <ImageButton
+            android:id="@+id/rightButton"
+            style="@android:style/Widget.Material.ImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onRightClick"
+            app:srcCompat="@mipmap/ic_keyboard_arrow_right_black_48dp" />
+
+    </LinearLayout>
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Tap on the RIGHT ARROW to go to the next word."
+        android:textColor="@color/colorBlack"
+        android:textSize="12sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Tap on the LEFT ARROW to go back to the previous word."
+        android:textColor="@color/colorBlack"
+        android:textSize="12sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="After entering all the words Tap on the CONFIRM button below."
+        android:textColor="@color/colorBlack"
+        android:textSize="12sp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        />
+
+    <ImageButton
+        android:id="@+id/confirmButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/confirm_button"
+        android:clickable="true" />
+
+</LinearLayout>

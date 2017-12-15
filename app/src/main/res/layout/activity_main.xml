@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.fahd.stegoshare.MainActivity"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@drawable/app_bg_new">
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/id_app_icon_ImageView"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/app_icon_new"
+        />
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:shadowDx="15"
+        android:shadowDy="15"
+        android:id="@+id/id_app_description_textView"
+        android:text="@string/app_description"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite"
+        android:fontFamily="monospace"
+        android:id="@+id/id_tapAny_textView"
+        android:text="@string/app_tapAny"
+        android:shadowColor="@color/colorAppRed"
+        android:shadowDx="-5"
+        android:shadowDy="3"
+        android:shadowRadius="5"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_weight="4"
+        >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_hide_imageButton"
+            android:background="@drawable/hide_icon_circle_shadow_96"
+            android:clickable="true"
+            android:layout_marginBottom="10dp"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_recover_imageButton"
+            android:background="@drawable/recover_icon_circle_shadow_96"
+            android:layout_marginLeft="100dp"
+            android:clickable="true"
+            android:layout_marginBottom="10dp"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

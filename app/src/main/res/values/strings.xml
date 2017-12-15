@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Stegoshare</string>
+    <string name="app_description">Stegoshare allows you to securely distribute
+        shares of your mnemonic seed by embedding them into images.
+    </string>
+
+    <string name="app_tapAny">Tap one of the options below to continue.</string>
+
+    <string-array name="total_words_array">
+        <item> 3 </item>
+        <item> 6 </item>
+        <item> 9 </item>
+        <item> 12 </item>
+        <item> 13 </item>
+        <item> 14 </item>
+        <item> 15 </item>
+        <item> 18 </item>
+        <item> 21 </item>
+        <item> 23 </item>
+        <item> 24 </item>
+        <item> 25 </item>
+        <item> 26 </item>
+    </string-array>
+
+    <string-array name="total_shares_array">
+        <item> 2 </item>
+        <item> 3 </item>
+        <item> 4 </item>
+        <item> 5 </item>
+        <item> 6 </item>
+        <item> 7 </item>
+        <item> 8 </item>
+        <item> 9 </item>
+        <item> 10 </item>
+    </string-array>
+
+    <string-array name="required_shares_array">
+        <item> 2 </item>
+        <item> 3 </item>
+        <item> 4 </item>
+        <item> 5 </item>
+        <item> 6 </item>
+        <item> 7 </item>
+        <item> 8 </item>
+        <item> 9 </item>
+        <item> 10 </item>
+    </string-array>
+
+
+</resources>
