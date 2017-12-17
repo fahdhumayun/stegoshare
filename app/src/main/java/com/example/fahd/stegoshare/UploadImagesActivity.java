@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class UploadImagesActivity extends AppCompatActivity {
@@ -71,15 +70,14 @@ public class UploadImagesActivity extends AppCompatActivity {
         grdImages= (GridView) findViewById(R.id.grdImages);
         grdImages.setAdapter(imageAdapter);
 
-        ImageButton emailButton = (ImageButton) findViewById(R.id.emailButton);
-        emailButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton uploadButton = (ImageButton) findViewById(R.id.uploadButton);
+        uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 share();
             }
         });
 
-        //TODO: finished button to clear all data
         ImageButton doneButton = (ImageButton) findViewById(R.id.doneButton);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override

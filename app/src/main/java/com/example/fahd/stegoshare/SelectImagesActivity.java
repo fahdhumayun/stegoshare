@@ -62,7 +62,6 @@ public class SelectImagesActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("  Stegoshare");
             getSupportActionBar().setSubtitle("    Hide Seed List - Step 2: Select images");
 
-            //TODO get n from intent
             numberOfParts = getIntent().getIntExtra("user_selected_shares_n", -1); //line 52
 
             tv = (TextView) findViewById(R.id.textView);
@@ -158,7 +157,6 @@ public class SelectImagesActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Access Granted. Tap Gallery button again and select images.", Toast.LENGTH_LONG).show();
 
             } else {
-                //TODO: what to do if cant access images
                 Toast.makeText(getApplicationContext(), "Need access to Gallery for selecting the images.", Toast.LENGTH_LONG).show();
                 //request again if permission not granted
                 requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},

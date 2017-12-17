@@ -46,7 +46,7 @@
             android:orientation="vertical"
             >
             <ImageButton
-                android:id="@+id/emailButton"
+                android:id="@+id/uploadButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@android:drawable/sym_action_email"
