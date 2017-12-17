@@ -192,13 +192,15 @@ public class SeedActivity extends AppCompatActivity {
     }
 
     public void onRightClick(View view){
-
         if(seedWord.getText().toString().equals("")) {
             showToast("Please enter the word to go to the next word.");
             return;
         }
 
-        seedList[counter - 1] =  seedWord.getText().toString();
+        if(!seedWord.getText().toString().equals("")) {
+            //Log.v("MAIN", "Setting string: " + seedWord.getText().toString() + "at index: " + (counter - 1) + "\n");
+            seedList[counter - 1] =  counter + "." + seedWord.getText().toString();
+        }
 
         counter++;
         //Clearing the text field and setting the word number
@@ -207,7 +209,7 @@ public class SeedActivity extends AppCompatActivity {
 
         //Checking the next index for null
         if (!seedList[counter - 1].toString().equals(""))
-            seedWord.setText(seedList[counter - 1]);
+            seedWord.setText(seedList[counter - 1].replace(".","").replaceAll("\\d",""));
         else
             seedWord.setHint("word " + counter);
 
@@ -223,12 +225,13 @@ public class SeedActivity extends AppCompatActivity {
         seedCount.setText(counter +  ".");
 
         if (!seedList[counter - 1].toString().equals(""))
-            seedWord.setText(seedList[counter - 1]);
+            seedWord.setText(seedList[counter - 1].replace(".","").replaceAll("\\d",""));
         else
             seedWord.setHint("word " + counter);
 
 
         setButtonVisibility();
+
 
     }
 
@@ -276,48 +279,39 @@ public class SeedActivity extends AppCompatActivity {
         return res;
     }
 
-    public void buildShares(String s, int N, int M){
+    public void buildShares(String seedList, int N, int M){
+
 
         final int CERTAINTY = 256;
         final SecureRandom random = new SecureRandom();
         Random randy = new Random();
 
-        String seedListString = s;
-        byte[] byteArray = seedListString.getBytes();
-        String reconstitutedString = new String(byteArray);
+        byte[] byteArray = seedList.getBytes();
+        /*String reconstitutedString = new String(byteArray);
         System.out.println("byteArray: " + byteArray);
         System.out.println("reconstructed: \n" + reconstitutedString);
 
         System.out.println("------------------------------------------------------");
+        */
         final BigInteger secret = new BigInteger(1,byteArray);
-        System.out.println("BigInteger: " + secret);
-        System.out.println("BigInteger.toByteArray: " + secret.toByteArray());
 
+        /*System.out.println("BigInteger: " + secret);
+        System.out.println("BigInteger.toByteArray: " + secret.toByteArray());
         String recon = new String(byteArray);
         System.out.println("reconstructed:\n" + recon + "\n");
-
+        */
 
 
         // prime number must be longer then secret number
         final BigInteger prime = new BigInteger(secret.bitLength() + 1, CERTAINTY, random);
 
-        /*
-        // 2 - at least 2 secret parts are needed to view secret
-        // 5 - there are 5 persons that get secret parts
-        final SecretShare[] shares = Shamir.split(secret, M, N, prime, random);
-        // we can use any combination of 2 or more parts of secret
-        SecretShare[] sharesToViewSecret = new SecretShare[] {shares[4],shares[1], shares[2]}; // 4 & 1 & 2
-        BigInteger result = Shamir.combine(sharesToViewSecret, prime);
-        //printMultiSecretShare(stringBuilder(shares[1].getShare().toByteArray()), stringBuilder(shares[4].getShare().toByteArray()), stringBuilder(shares[0].getShare().toByteArray()));
-        sharesToViewSecret = new SecretShare[] {shares[1],shares[4],shares[0]}; // 1 & 4 & 0
-        result = Shamir.combine(sharesToViewSecret, prime);
-        */
-
-
         final SecretShare[] shares = Shamir.split(secret, M, N, prime, random);
 
 
-        // we can use any combination of 2 or more parts of secret
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+        //Testing the secret shares
         ArrayList<SecretShare> sharesToViewSecretArrayList = new ArrayList<SecretShare>();
         sharesToViewSecretArrayList = generateRandomSecretShareArrayList(shares);
         SecretShare[] sharesToViewSecret = sharesToViewSecretArrayList.toArray(new SecretShare[sharesToViewSecretArrayList.size()]);
@@ -328,6 +322,9 @@ public class SeedActivity extends AppCompatActivity {
         sharesToViewSecretArrayList = generateRandomSecretShareArrayList(shares);
         sharesToViewSecret          = sharesToViewSecretArrayList.toArray(new SecretShare[sharesToViewSecretArrayList.size()]);
         result = Shamir.combine(sharesToViewSecret, prime);
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
     }
 
 
@@ -339,6 +336,14 @@ public class SeedActivity extends AppCompatActivity {
         while(closedList.size() < user_selected_shares_m) {
             int randNum = randy.nextInt((user_selected_shares_n - user_selected_shares_m) + user_selected_shares_m);
             if(!isInClosedList(closedList,randNum)) {
+                //System.out.println("Secret share: " + .)
+                System.out.println("The Share is: " + shares[randNum].getShare());
+                String temp = new String(shares[randNum].getShare().toString());
+                System.out.println("The share concatenated is: " + temp + shares[randNum].getNumber());
+                System.out.println("BigInteger.toByteArray: " + shares[randNum].getShare().toByteArray());
+
+                BigInteger bg  = new BigInteger(temp + shares[randNum].getNumber());
+                System.out.println("The concatenated.toByteArray: " + bg.toByteArray());
                 closedList.add(randNum);
                 ss_arr_list.add(shares[randNum]);
             }
