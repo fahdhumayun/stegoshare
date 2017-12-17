@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -53,21 +54,22 @@ public class SelectImagesActivity extends AppCompatActivity {
         if(callingActivity.equals("RecoverActivity")){
             recoverActivityFlag = true;
             handleRecoverActivity();
+        } else {
+
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle("  Stegoshare");
+            getSupportActionBar().setSubtitle("    Hide Seed List - Step 2: Select images");
+
+            //TODO get n from intent
+            numberOfParts = getIntent().getIntExtra("user_selected_shares_n", -1); //line 52
+
+            tv = (TextView) findViewById(R.id.textView);
+            tv.setText("Add " + numberOfParts + " images that are needed to be encrypted with the generated shares.");
+            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/CenturyGothic.ttf");
+            tv.setTypeface(typeface);
         }
-
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setTitle("  Stegoshare");
-        getSupportActionBar().setSubtitle("    Hide Seed List - Step 2: Select images");
-
-        //TODO get n from intent
-        numberOfParts = getIntent().getIntExtra("user_selected_shares_n",-1); //line 52
-
-        tv = (TextView) findViewById(R.id.textView);
-        tv.setText("Add " + numberOfParts + " images that are needed to be encrypted with the generated shares.");
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/CenturyGothic.ttf");
-        tv.setTypeface(typeface);
 
         ctv = (CustomTextView) findViewById(R.id.galleryButtonTvId);
 
@@ -93,10 +95,14 @@ public class SelectImagesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO encode data into photos using imagesPathList
+                if(!recoverActivityFlag){
+                    Intent uploadIntent = new Intent(SelectImagesActivity.this,UploadImagesActivity.class);
+                    uploadIntent.putExtra("encodedImagePaths", imagesPathList);//TODO add actual encoded images
+                    startActivity(uploadIntent);
+                } else {
+                    decoding();
+                }
 
-                Intent uploadIntent = new Intent(SelectImagesActivity.this,UploadImagesActivity.class);
-                uploadIntent.putExtra("encodedImagePaths", imagesPathList);//TODO add actual encoded images
-                startActivity(uploadIntent);
             }
         });
 
@@ -113,6 +119,7 @@ public class SelectImagesActivity extends AppCompatActivity {
 
         Intent intent = new Intent(SelectImagesActivity.this,CustomPhotoGalleryActivity.class);
         intent.putExtra("numberOfParts", numberOfParts);
+        intent.putExtra("recoverActivityFlag", recoverActivityFlag);
         startActivityForResult(intent,PICK_IMAGES);
     }
 
@@ -165,6 +172,29 @@ public class SelectImagesActivity extends AppCompatActivity {
     }
 
     public void handleRecoverActivity(){
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setTitle("  Stegoshare");
+        getSupportActionBar().setSubtitle("    Recover Seed List - Step 1: Select images");
 
+        tv = (TextView) findViewById(R.id.textView);
+        tv.setText("Add the images that are needed to be decrypted.");
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/CenturyGothic.ttf");
+        tv.setTypeface(typeface);
+    }
+
+    //test method
+    public void decoding(){
+        for(int i = 0; i < imagesPathList.size(); i++){
+            File file = new File(imagesPathList.get(i));
+            Log.v("TEST", "decoding file: " + file);
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+            Log.v("TEST", "decoding bitmap: " + bitmap);
+            byte[] returnBytes = BitmapEncoder.decode(bitmap);
+            String retrievedShare = new String(returnBytes);
+            Log.v("TEST", "decoding retrievedShare: " + retrievedShare);
+        }
     }
 }

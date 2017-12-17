@@ -39,6 +39,7 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
     private int count;
     private int numberOfParts;
 
+    private boolean recoverActivityFlag;
 
     /**
      * Overrides methods
@@ -50,14 +51,29 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
         grdImages= (GridView) findViewById(R.id.grdImages);
         btnSelect= (ImageButton) findViewById(R.id.btnSelect);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setTitle("  Gallery");
-        getSupportActionBar().setSubtitle("    Hide Seed List - Step 2: Select images");
+        recoverActivityFlag = getIntent().getBooleanExtra("recoverActivityFlag", false);
 
-        numberOfParts = getIntent().getIntExtra("numberOfParts",1);
-        ((TextView) findViewById(R.id.selectText)).setText("Select " + numberOfParts + " images");
+        if(recoverActivityFlag){
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle("  Gallery");
+            getSupportActionBar().setSubtitle("    Recover Seed List - Step 1: Select images");
+
+            ((TextView) findViewById(R.id.selectText)).setText("Select the images");
+
+        } else {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle("  Gallery");
+            getSupportActionBar().setSubtitle("    Hide Seed List - Step 2: Select images");
+
+            numberOfParts = getIntent().getIntExtra("numberOfParts",1);
+            ((TextView) findViewById(R.id.selectText)).setText("Select " + numberOfParts + " images");
+        }
+
+
 
         final String[] columns = { MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID };
         final String orderBy = MediaStore.Images.Media._ID;
@@ -92,7 +108,7 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
                         selectImages = selectImages + arrPath[i] + "|";
                     }
                 }
-                if (cnt != numberOfParts) {
+                if (cnt != numberOfParts && !recoverActivityFlag) {
                     Toast.makeText(getApplicationContext(), "Select " + numberOfParts + " images.", Toast.LENGTH_LONG).show();
                 } else {
 

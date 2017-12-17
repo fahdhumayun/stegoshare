@@ -65,8 +65,6 @@ public class UploadImagesActivity extends AppCompatActivity {
 
         imagePaths = tempImagePaths;
 
-        decoding();
-
         thumbnailsselection = new boolean[count];
 
         imageAdapter = new ImageAdapter(this, thumbnailsselection, imagePaths, count);
@@ -209,20 +207,6 @@ public class UploadImagesActivity extends AppCompatActivity {
                     REQUEST_WRITE_STORAGE);
         } else {
             //requestPermission(this);
-        }
-    }
-
-    //test method
-    public void decoding(){
-        for(int i = 0; i < imagePaths.size(); i++){
-            File file = new File(imagePaths.get(i));
-            Log.v("TEST", "decoding file: " + file);
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-            Log.v("TEST", "decoding bitmap: " + bitmap);
-            byte[] returnBytes = BitmapEncoder.decode(bitmap);
-            String retrievedShare = new String(returnBytes);
-            Log.v("TEST", "decoding retrievedShare: " + retrievedShare);
         }
     }
 }
