@@ -29,6 +29,7 @@ public class SeedListActivity extends AppCompatActivity {
     ArrayList<String> seedArrayList;
     int user_selected_shares_n;
     int user_selected_shares_m;
+    private BigInteger prime;
 
     private ListView wordsListView;
     private CustomAdapter ca;
@@ -193,7 +194,7 @@ public class SeedListActivity extends AppCompatActivity {
 
 
         // prime number must be longer then secret number
-        final BigInteger prime = new BigInteger(secret.bitLength() + 1, CERTAINTY, random);
+        prime = new BigInteger(secret.bitLength() + 1, CERTAINTY, random);
 
         // N secret shares are created
         final SecretShare[] shares = Shamir.split(secret, M, N, prime, random);
@@ -227,16 +228,24 @@ public class SeedListActivity extends AppCompatActivity {
 
         String date     = cal.getTime() + "";
         String hashList = getSeedListHash(buildString());
-        myDBHelper.addDateAndHash(date, hashList);
+        myDBHelper.addShareInfo(date, hashList);
         //myDBHelper.addListHash(getSeedListHash(buildString()));
 
         int date_primarykey = myDBHelper.getDatePrimaryKey(date);
 
         for(SecretShare secret:ss)
-            myDBHelper.addShare(secret.getShare().toString() + secret.getNumber(), date_primarykey);
+            myDBHelper.addShare(shareBuilder(secret.getShare(),secret.getNumber(),
+                    prime,user_selected_shares_n,user_selected_shares_m),date_primarykey);
 
         ArrayList<String> testList = myDBHelper.getSecretSharesStringList();
 
+    }
+
+    public String shareBuilder(BigInteger share, int shareNumber, BigInteger prime, int n, int m){
+        String share_string = prime.toString() + "," + share.toString() + "," + shareNumber + "," + n + "," +  m;
+
+        System.out.println(share_string);
+        return share_string;
     }
 
     public ArrayList<SecretShare> generateRandomSecretShareArrayList(SecretShare[] shares){
