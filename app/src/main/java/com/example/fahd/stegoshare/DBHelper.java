@@ -132,13 +132,14 @@ public class DBHelper extends SQLiteOpenHelper {
         //Get a readable reference to the database
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + DB_SHARES_TABLE;
+        //select * from dateTable where id = (select max(id) from dateTable);
+        String selectQuery = "SELECT  * FROM " + DB_SHARES_TABLE + " WHERE date_id = (SELECT MAX(date_id) FROM sharesTable)";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
-            int key = cursor.getInt(0);
+            int key = cursor.getInt(1);
             System.out.println("key: " + key);
             String hash = getListHash(key);
             Log.v("SecretShareList", "hash: " + hash);
