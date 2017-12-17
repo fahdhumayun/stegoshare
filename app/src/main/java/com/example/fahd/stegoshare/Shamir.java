@@ -122,35 +122,6 @@ public final class Shamir
         }
     }
 
-    /*public static void main(final String[] args)
-    {
-        final int CERTAINTY = 256;
-        final SecureRandom random = new SecureRandom();
-        String coolString = "1. Okay 2. cool 3. fire 4. cold 5. tree 6. book";
-        byte[] byteArray = coolString.getBytes();
-        String reconstitutedString = new String(byteArray);
-        System.out.println("byteArray: " + byteArray);
-        System.out.println("reconstructed: " + reconstitutedString);
-        System.out.println("---------------------------");
-        final BigInteger secret = new BigInteger(1,byteArray);
-        System.out.println("BigInteger: " + secret);
-        System.out.println("BigInteger.toByteArray: " + secret.toByteArray());
-        String recon = new String(byteArray);
-        System.out.println("reconstructed: " + recon + "\n");
-        // prime number must be longer then secret number
-        final BigInteger prime = new BigInteger(secret.bitLength() + 1, CERTAINTY, random);
-        // 2 - at least 2 secret parts are needed to view secret
-        // 5 - there are 5 persons that get secret parts
-        final SecretShare[] shares = Shamir.split(secret, 3, 5, prime, random);
-        printSecretShares(shares);
-        // we can use any combination of 2 or more parts of secret
-        SecretShare[] sharesToViewSecret = new SecretShare[] {shares[4],shares[1], shares[2]}; // 4 & 1 & 2
-        BigInteger result = Shamir.combine(sharesToViewSecret, prime);
-        sharesToViewSecret = new SecretShare[] {shares[1],shares[4],shares[0]}; // 1 & 4 & 0
-        result = Shamir.combine(sharesToViewSecret, prime);
-        sharesToViewSecret = new SecretShare[] {shares[0],shares[1],shares[3]}; // 0 & 1 & 3
-        result = Shamir.combine(sharesToViewSecret, prime);
-    }*/
 }
 
 

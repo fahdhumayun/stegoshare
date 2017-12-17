@@ -199,7 +199,7 @@ public class SeedActivity extends AppCompatActivity {
 
         if(!seedWord.getText().toString().equals("")) {
             //Log.v("MAIN", "Setting string: " + seedWord.getText().toString() + "at index: " + (counter - 1) + "\n");
-            seedList[counter - 1] =  counter + "." + seedWord.getText().toString();
+            seedList[counter - 1] =  counter + ". " + seedWord.getText().toString();
         }
 
         counter++;
@@ -236,7 +236,7 @@ public class SeedActivity extends AppCompatActivity {
     }
 
     public void onConfirm(View view){
-        seedList[counter - 1] = counter + "." + seedWord.getText().toString();
+        seedList[counter - 1] = counter + ". " + seedWord.getText().toString();
         if(!seedWord.getText().toString().equals("") && !containsNullStr(seedList) && (user_selected_shares_m <= user_selected_shares_n)) {
             int counter = 1;
             for (String s : seedList) {
@@ -245,11 +245,12 @@ public class SeedActivity extends AppCompatActivity {
             }
             seedArrayList = new ArrayList<String>(Arrays.asList(seedList));
 
-            buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
+
 
             Intent i = new Intent(this, SeedListActivity.class); // line 247
 
             i.putExtra("user_selected_shares_n", user_selected_shares_n); // send n to SelectImagesActivity
+            i.putExtra("user_selected_shares_m", user_selected_shares_m); // send m to SelectImagesActivity
             i.putExtra("seedArrayList", seedArrayList);
 
             startActivity(i);
@@ -264,107 +265,6 @@ public class SeedActivity extends AppCompatActivity {
     public boolean containsNullStr(String[] str){
         for(String s : str){
             if(s.equals(""))
-                return true;
-        }
-        return false;
-    }
-
-    public String buildString(){
-        String res = "";
-        int index = 1;
-        for(String s:seedList) {
-            res += s + "\n";
-            index++;
-        }
-        return res;
-    }
-
-    public void buildShares(String seedList, int N, int M){
-
-
-        final int CERTAINTY = 256;
-        final SecureRandom random = new SecureRandom();
-        Random randy = new Random();
-
-        byte[] byteArray = seedList.getBytes();
-        /*String reconstitutedString = new String(byteArray);
-        System.out.println("byteArray: " + byteArray);
-        System.out.println("reconstructed: \n" + reconstitutedString);
-
-        System.out.println("------------------------------------------------------");
-        */
-        final BigInteger secret = new BigInteger(1,byteArray);
-
-        /*System.out.println("BigInteger: " + secret);
-        System.out.println("BigInteger.toByteArray: " + secret.toByteArray());
-        String recon = new String(byteArray);
-        System.out.println("reconstructed:\n" + recon + "\n");
-        */
-
-
-        // prime number must be longer then secret number
-        final BigInteger prime = new BigInteger(secret.bitLength() + 1, CERTAINTY, random);
-
-        final SecretShare[] shares = Shamir.split(secret, M, N, prime, random);
-
-
-        //------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------
-        //Testing the secret shares
-        ArrayList<SecretShare> sharesToViewSecretArrayList = new ArrayList<SecretShare>();
-        sharesToViewSecretArrayList = generateRandomSecretShareArrayList(shares);
-        SecretShare[] sharesToViewSecret = sharesToViewSecretArrayList.toArray(new SecretShare[sharesToViewSecretArrayList.size()]);
-
-        BigInteger result = Shamir.combine(sharesToViewSecret, prime);
-
-
-        sharesToViewSecretArrayList = generateRandomSecretShareArrayList(shares);
-        sharesToViewSecret          = sharesToViewSecretArrayList.toArray(new SecretShare[sharesToViewSecretArrayList.size()]);
-        result = Shamir.combine(sharesToViewSecret, prime);
-        //------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------
-    }
-
-    public ArrayList<SecretShare> generateRandomSecretShareArrayList(SecretShare[] shares){
-        Random randy = new Random();
-        ArrayList<SecretShare> ss_arr_list = new ArrayList<SecretShare>();
-        ArrayList<Integer> closedList = new ArrayList<Integer>();
-
-        while(closedList.size() < user_selected_shares_m) {
-            int randNum = randy.nextInt((user_selected_shares_n - user_selected_shares_m) + user_selected_shares_m);
-            if(!isInClosedList(closedList,randNum)) {
-                /*System.out.println("The Share is: " + shares[randNum].getShare());*/
-                //System.out.println("The share concatenated is: " + temp + shares[randNum].getNumber());
-
-                String temp = new String(shares[randNum].getShare().toString());
-                SecretShare test = new SecretShare(temp + shares[randNum].getNumber());
-
-                /*BigInteger bg  = new BigInteger(temp + shares[randNum].getNumber());
-
-                String bg_str  = bg.toString();
-                char lastDigit     = bg.toString().charAt(bg.toString().length() - 1);
-                String removeConcate = bg.toString().substring(0,bg.toString().length() - 1);
-
-                System.out.println("lastDigit: " + lastDigit);
-                System.out.println("removeConcate: " + removeConcate);
-
-                System.out.println("BigInteger.toByteArray: " + shares[randNum].getShare().toByteArray());
-                System.out.println("The concatenated.toByteArray: " + bg.toByteArray());
-                */
-                closedList.add(randNum);
-                ss_arr_list.add(shares[randNum]);
-            }
-
-        }
-
-        return ss_arr_list;
-    }
-
-    public Boolean isInClosedList(ArrayList<Integer> closed, int item){
-        for(Integer i: closed) {
-            if (i == item)
                 return true;
         }
         return false;
