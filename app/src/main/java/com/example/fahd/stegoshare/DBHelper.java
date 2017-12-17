@@ -127,6 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    //FORMAT: prime number length + prime number + seed list hash + secret share + share number + n + m
     public ArrayList<String> getSecretSharesStringList(){
         ArrayList<String> shareList = new ArrayList<String>();
         //Get a readable reference to the database
@@ -144,7 +145,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String hash = getListHash(key);
             Log.v("SecretShareList", "hash: " + hash);
             do {
-                Log.v("SecretShareList",hash + cursor.getString(2));
+                Log.v("SecretShareList",hash + ","  + cursor.getString(2));
                 shareList.add(hash + cursor.getString(2));
             } while (cursor.moveToNext());
         }
@@ -158,7 +159,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /* BEGIN DATABASE METHODS FOR DB_DATE_TABLE */
 
-    public void addDateAndHash(String share, String hash){
+    public void addShareInfo(String share, String hash){
 
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();

@@ -125,4 +125,4 @@ public final class Shamir
 }
 
 
-//reference:x
+//reference: https://stackoverflow.com/questions/19327651/java-implementation-of-shamirs-secret-sharing#23470662
