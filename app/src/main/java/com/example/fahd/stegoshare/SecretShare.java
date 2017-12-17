@@ -11,7 +11,7 @@ public class SecretShare {
 
     public SecretShare(final int number, final BigInteger share) {
         this.number = number;
-        this.share = share;
+        this.share  = share;
     }
 
     //TODO: need to know how many digits the share will have, naively uses one digit may need 2 if 9+
