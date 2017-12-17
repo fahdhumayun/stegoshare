@@ -1,9 +1,13 @@
+// By Guy Rubinstein
+
 package com.example.fahd.stegoshare;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +59,22 @@ public class UploadImagesActivity extends AppCompatActivity {
         });
 
         //TODO: finished button to clear all data
+        ImageButton doneButton = (ImageButton) findViewById(R.id.doneButton);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(UploadImagesActivity.this)
+                        .setTitle("Finished")
+                        .setMessage("Are you done? All data will be deleted and cannot be recovered.")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                cleanup();
+                            }})
+                        .setNegativeButton(android.R.string.no
+                                , null).show();
+            }
+        });
     }
 
     private void share(){
@@ -69,7 +89,7 @@ public class UploadImagesActivity extends AppCompatActivity {
             ArrayList<Uri> selectedImageUris = new ArrayList<>();
             for (String path : selectedImagePaths){
                 selectedImageUris.add(FileProvider.getUriForFile(this,
-                        "com.example.guyrubinstein.finalproject.fileprovider", //TODO CHANGE ME
+                        "com.example.fahd.stegoshare.fileprovider", // <-- changed this
                         new File(path)));
             }
 
@@ -80,5 +100,15 @@ public class UploadImagesActivity extends AppCompatActivity {
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(Intent.createChooser(shareIntent, "Send..."));
         }
+        if (selectedImagePaths.isEmpty()) {
+            Toast.makeText(this, "Please select the images to be uplaoded/stored.", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void cleanup(){
+        this.deleteDatabase("stegoshareDB"); //delete database
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent); //return to MainActivity
     }
 }

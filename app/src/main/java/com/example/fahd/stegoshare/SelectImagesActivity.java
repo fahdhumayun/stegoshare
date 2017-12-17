@@ -50,7 +50,7 @@ public class SelectImagesActivity extends AppCompatActivity {
         getSupportActionBar().setSubtitle("    Hide Seed List - Step 2: Select images");
 
         //TODO get n from intent
-        numberOfParts = 2;
+        numberOfParts = getIntent().getIntExtra("user_selected_shares_n",-1); //line 52
 
         tv = (TextView) findViewById(R.id.textView);
         tv.setText("Add " + numberOfParts + " images that are needed to be encrypted with the generated shares.");
@@ -115,6 +115,9 @@ public class SelectImagesActivity extends AppCompatActivity {
             } catch (Throwable e) {
                 e.printStackTrace();
             }
+
+            tv.setText("Images added, please review the images and then tap NEXT on the bottom.");
+
             for (int i = 0; i < imagesPath.length; i++) {
                 imagesPathList.add(imagesPath[i]);
                 bitmap = BitmapFactory.decodeFile(imagesPath[i]);
@@ -142,6 +145,9 @@ public class SelectImagesActivity extends AppCompatActivity {
             } else {
                 //TODO: what to do if cant access images
                 Toast.makeText(getApplicationContext(), "Need access to Gallery for selecting the images.", Toast.LENGTH_LONG).show();
+                //request again if permission not granted
+                requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_READ_EXT_STORAGE);
             }
         }
     }

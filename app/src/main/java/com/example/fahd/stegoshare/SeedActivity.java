@@ -244,7 +244,11 @@ public class SeedActivity extends AppCompatActivity {
 
             buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
 
-            Intent i = new Intent(this, SelectImagesActivity.class);
+            Intent i = new Intent(this, SeedListActivity.class); // line 247
+
+            i.putExtra("user_selected_shares_n", user_selected_shares_n); // send n to SelectImagesActivity
+            i.putExtra("seedArrayList", seedArrayList);
+
             startActivity(i);
         }
         else if(!(user_selected_shares_m <= user_selected_shares_n))

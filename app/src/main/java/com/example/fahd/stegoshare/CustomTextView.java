@@ -1,3 +1,5 @@
+// By Fahd Humayun
+
 package com.example.fahd.stegoshare;
 
 import android.content.Context;

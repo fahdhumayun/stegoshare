@@ -1,3 +1,5 @@
+// By Guy Rubinstein
+
 package com.example.fahd.stegoshare;
 
 import android.content.Context;

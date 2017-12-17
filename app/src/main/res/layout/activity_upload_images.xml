@@ -12,9 +12,13 @@
         android:id="@+id/uploadText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:text="Upload Images" />
+        android:text="Select the images and upload them, then tap on FINISH after all the images are stored/uploaded."
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorAppRed"
+        android:padding="10dp"
+        />
 
     <GridView
         android:id="@+id/grdImages"
@@ -29,10 +33,68 @@
         android:horizontalSpacing="10dp"
         android:gravity="center"/>
 
-    <ImageButton
-        android:id="@+id/emailButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/sym_action_email" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <ImageButton
+                android:id="@+id/emailButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/sym_action_email"
+                android:backgroundTint="@color/colorAppRed"
+                />
+
+            <com.example.fahd.stegoshare.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:textSize="12sp"
+                android:text="Upload"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="5dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="100dp"
+            >
+
+            <ImageButton
+                android:id="@+id/doneButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_menu_send"
+                android:backgroundTint="@color/colorAppRed"
+                />
+
+            <com.example.fahd.stegoshare.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:textSize="12sp"
+                android:text="Finish"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="11dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>
