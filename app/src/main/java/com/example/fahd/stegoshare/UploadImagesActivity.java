@@ -65,6 +65,8 @@ public class UploadImagesActivity extends AppCompatActivity {
 
         imagePaths = tempImagePaths;
 
+        decoding();
+
         thumbnailsselection = new boolean[count];
 
         imageAdapter = new ImageAdapter(this, thumbnailsselection, imagePaths, count);
@@ -96,6 +98,7 @@ public class UploadImagesActivity extends AppCompatActivity {
                                 , null).show();
             }
         });
+
     }
 
     private void share(){
@@ -148,11 +151,14 @@ public class UploadImagesActivity extends AppCompatActivity {
 
         for(int i = 0; i < imagePaths.size(); i++){
             File file = new File(imagePaths.get(i));
+            Log.v("TEST", "encoding file: " + file);
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
             String share = sharesList.get(i);
+            Log.v("TEST", "share " + (i+1) + " " + share);
             byte[] bytes = share.getBytes();
             Bitmap tempBitmap = BitmapEncoder.encode(bitmap, bytes);
+            Log.v("TEST", "encoding bitmap: " + bitmap);
             saveImageTemporary(tempBitmap, i+1);
         }
 
@@ -174,16 +180,17 @@ public class UploadImagesActivity extends AppCompatActivity {
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root);
         myDir.mkdirs();
-        String fname = "ImageEncoded-"+imageNumber+".jpg";
+        String fname = "ImageEncoded-"+imageNumber+".png";
         File file = new File(myDir, fname);
         if (file.exists()) {
             file.delete();
         }
-        Log.i("LOAD", root + fname);
+        //Log.i("LOAD", root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
-            tempBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            Log.v("TEST", "file: " + file);
+            tempBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            Log.v("TEST", "saving file: " + file);
+            Log.v("TEST", "saving bitmap: " + tempBitmap);
             tempImagePaths.add(file.toString());
             out.flush();
             out.close();
@@ -201,7 +208,21 @@ public class UploadImagesActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_WRITE_STORAGE);
         } else {
-            requestPermission(this);
+            //requestPermission(this);
+        }
+    }
+
+    //test method
+    public void decoding(){
+        for(int i = 0; i < imagePaths.size(); i++){
+            File file = new File(imagePaths.get(i));
+            Log.v("TEST", "decoding file: " + file);
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+            Log.v("TEST", "decoding bitmap: " + bitmap);
+            byte[] returnBytes = BitmapEncoder.decode(bitmap);
+            String retrievedShare = new String(returnBytes);
+            Log.v("TEST", "decoding retrievedShare: " + retrievedShare);
         }
     }
 }
