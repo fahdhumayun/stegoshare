@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -40,37 +41,59 @@ public class SeedListActivity extends AppCompatActivity {
 
     private DBHelper myDBHelper;
 
+    private boolean recoverActivityFlag;
+    private ArrayList<String> shareArrayList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seed_list);
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setTitle("  Stegoshare");
-        getSupportActionBar().setSubtitle("    Hide Seed List - Step 1: Input words list");
+        recoverActivityFlag = getIntent().getBooleanExtra("recoverActivityFlag", false);
 
-        seedArrayList = new ArrayList<String>(getIntent().getStringArrayListExtra("seedArrayList"));
+        if(recoverActivityFlag){
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle("  Stegoshare");
+            getSupportActionBar().setSubtitle("    Recover Seed List - Step 2: Recovered words list");
+
+            shareArrayList = getIntent().getStringArrayListExtra("shareArrayList");
+
+        } else {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setTitle("  Stegoshare");
+            getSupportActionBar().setSubtitle("    Hide Seed List - Step 1: Input words list");
+
+
+            seedArrayList = new ArrayList<String>(getIntent().getStringArrayListExtra("seedArrayList"));
+        }
+
         user_selected_shares_n = getIntent().getIntExtra("user_selected_shares_n", -1);
         user_selected_shares_m = getIntent().getIntExtra("user_selected_shares_m", -1);
 
         wordsListView = (ListView) findViewById(R.id.id_wordsListView);
         nextButton = (ImageButton) findViewById(R.id.id_nextButtonList);
 
-        ca = new CustomAdapter(this, seedArrayList);
 
-        wordsListView.setAdapter(ca);
+        if(!recoverActivityFlag) {
+            ca = new CustomAdapter(this, seedArrayList);
+            wordsListView.setAdapter(ca);
 
-        wordsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l){
+            wordsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l){
 
-                showAlertDialog(i, wordsListView.getItemAtPosition(i).toString());
+                    showAlertDialog(i, wordsListView.getItemAtPosition(i).toString());
 
-                return true;
-            }
-        });
+                    return true;
+                }
+            });
+        } else {
+            handleRecoverList();
+        }
 
         nextButton.setOnClickListener(new View.OnClickListener(){
 
@@ -137,18 +160,23 @@ public class SeedListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
 
-        new AlertDialog.Builder(this)
-                .setTitle("Are you sure you want to go back?")
-                .setMessage("You will lose the data entered and you will need to enter the data again.")
-                .setNegativeButton(android.R.string.no, null)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        if(!recoverActivityFlag){
+            new AlertDialog.Builder(this)
+                    .setTitle("Are you sure you want to go back?")
+                    .setMessage("You will lose the data entered and you will need to enter the data again.")
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        Intent i = new Intent(SeedListActivity.this, SeedActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                }).create().show();
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            Intent i = new Intent(SeedListActivity.this, SeedActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    }).create().show();
+        } else {
+            finish();
+        }
+
     }
 
     public void startSelectImagesActivity(){
@@ -289,6 +317,15 @@ public class SeedListActivity extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+
+    public void handleRecoverList(){
+
+        //TODO split the share
+
+        for(int i = 0; i < shareArrayList.size(); i++){
+            Log.v("TEST", "shareArrayList Item at " + i + " " + shareArrayList.get(0));
+        }
     }
 
 }

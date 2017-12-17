@@ -243,6 +243,7 @@ public class SeedActivity extends AppCompatActivity {
             i.putExtra("user_selected_shares_n", user_selected_shares_n); // send n to SelectImagesActivity
             i.putExtra("user_selected_shares_m", user_selected_shares_m); // send m to SelectImagesActivity
             i.putExtra("seedArrayList", seedArrayList);
+            i.putExtra("recoverActivityFlag", false);
 
             startActivity(i);
         }
