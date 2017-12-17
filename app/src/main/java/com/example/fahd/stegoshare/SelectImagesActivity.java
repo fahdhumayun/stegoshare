@@ -93,10 +93,11 @@ public class SelectImagesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO encode data into photos using imagesPathList
-
-                Intent uploadIntent = new Intent(SelectImagesActivity.this,UploadImagesActivity.class);
-                uploadIntent.putExtra("encodedImagePaths", imagesPathList);//TODO add actual encoded images
-                startActivity(uploadIntent);
+                if (imagesPathList != null && !imagesPathList.isEmpty()){
+                    Intent uploadIntent = new Intent(SelectImagesActivity.this,UploadImagesActivity.class);
+                    uploadIntent.putExtra("encodedImagePaths", imagesPathList);//TODO add actual encoded images
+                    startActivity(uploadIntent);
+                }
             }
         });
 
