@@ -11,19 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 public class SeedActivity extends AppCompatActivity {
 
@@ -229,10 +223,7 @@ public class SeedActivity extends AppCompatActivity {
         else
             seedWord.setHint("word " + counter);
 
-
         setButtonVisibility();
-
-
     }
 
     public void onConfirm(View view){

@@ -14,7 +14,7 @@ public class SecretShare {
         this.share = share;
     }
 
-    //TODO: need to know how many digitthe final digit will contain, naively uses one digit
+    //TODO: need to know how many digits the share will have, naively uses one digit may need 2 if 9+
 
     public SecretShare(String s){
 
@@ -24,8 +24,7 @@ public class SecretShare {
 
         final BigInteger bg_share = new BigInteger(share);
 
-        //System.out.println("lastDigit: " + Integer.parseInt(Character.toString(lastDigit)));
-        //System.out.println("share: " + bg_share.toString());
+
         this.number =   Integer.parseInt(Character.toString(lastDigit));
         this.share  = bg_share;
 

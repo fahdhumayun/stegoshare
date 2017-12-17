@@ -7,20 +7,18 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 
 public class SeedListActivity extends AppCompatActivity {
@@ -35,6 +33,8 @@ public class SeedListActivity extends AppCompatActivity {
     private ImageButton nextButton;
 
     private CustomTextView ctv;
+
+    private DBHelper myDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,8 @@ public class SeedListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
+                SecretShare[] ss = buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
+                addSharesToDatabase(ss);
                 startSelectImagesActivity();
             }
         });
@@ -153,37 +154,25 @@ public class SeedListActivity extends AppCompatActivity {
         return res;
     }
 
-    public void buildShares(String seedList, int N, int M){
+    public SecretShare[] buildShares(String seedList, int N, int M){
 
 
         final int CERTAINTY = 256;
         final SecureRandom random = new SecureRandom();
-        Random randy = new Random();
 
+        //Convert the seed list into a bytearray, for conversion to BigInteger
         byte[] byteArray = seedList.getBytes();
-        /*String reconstitutedString = new String(byteArray);
-        System.out.println("byteArray: " + byteArray);
-        System.out.println("reconstructed: \n" + reconstitutedString);
-
-        System.out.println("------------------------------------------------------");
-        */
         final BigInteger secret = new BigInteger(1,byteArray);
-
-        /*System.out.println("BigInteger: " + secret);
-        System.out.println("BigInteger.toByteArray: " + secret.toByteArray());
-        String recon = new String(byteArray);
-        System.out.println("reconstructed:\n" + recon + "\n");
-        */
 
 
         // prime number must be longer then secret number
         final BigInteger prime = new BigInteger(secret.bitLength() + 1, CERTAINTY, random);
 
+        // N secret shares are created
         final SecretShare[] shares = Shamir.split(secret, M, N, prime, random);
 
-
         //------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------
+        //--------------------------------------TESTING---------------------------------------------
         //------------------------------------------------------------------------------------------
         //Testing the secret shares
         ArrayList<SecretShare> sharesToViewSecretArrayList = new ArrayList<SecretShare>();
@@ -192,13 +181,31 @@ public class SeedListActivity extends AppCompatActivity {
 
         BigInteger result = Shamir.combine(sharesToViewSecret, prime);
 
-
         sharesToViewSecretArrayList = generateRandomSecretShareArrayList(shares);
         sharesToViewSecret          = sharesToViewSecretArrayList.toArray(new SecretShare[sharesToViewSecretArrayList.size()]);
         result = Shamir.combine(sharesToViewSecret, prime);
         //------------------------------------------------------------------------------------------
+        //--------------------------------------TESTING---------------------------------------------
         //------------------------------------------------------------------------------------------
-        //------------------------------------------------------------------------------------------
+
+
+        return shares;
+    }
+
+    public void addSharesToDatabase(SecretShare[] ss){
+        // create a calendar
+        Calendar cal = Calendar.getInstance();
+
+        myDBHelper = new DBHelper(this);
+
+        String date = cal.getTime() + "";
+        myDBHelper.addDate(date);
+
+        int date_primarykey = myDBHelper.getDatePrimaryKey(date);
+
+        for(SecretShare secret:ss)
+            myDBHelper.addShare(secret.getShare().toString() + secret.getNumber(), date_primarykey);
+
     }
 
     public ArrayList<SecretShare> generateRandomSecretShareArrayList(SecretShare[] shares){

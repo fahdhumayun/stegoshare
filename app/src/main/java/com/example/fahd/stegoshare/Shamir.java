@@ -3,8 +3,8 @@
 package com.example.fahd.stegoshare;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.Random;
+
 
 public final class Shamir
 {
@@ -125,4 +125,4 @@ public final class Shamir
 }
 
 
-//reference: https://stackoverflow.com/questions/19327651/java-implementation-of-shamirs-secret-sharing#23470662
+//reference:x
