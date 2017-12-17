@@ -1,4 +1,4 @@
-// By Fahd Humayun
+// By Fahd Humayun and Nathan Morgenstern
 
 package com.example.fahd.stegoshare;
 
