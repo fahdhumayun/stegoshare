@@ -17,7 +17,11 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 /**
- * modified by guyrubinstein on 12/5/17.
+ * modified by guyrubinstein on 12/5/17
+ * Seperated from Gallery Activity
+ * Added new constructor
+ * Added new setBitmap function
+ * Modified getView function
  */
 
 public class ImageAdapter extends BaseAdapter {
