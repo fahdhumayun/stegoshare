@@ -93,10 +93,17 @@ public class SelectImagesActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imagesPathList != null && !imagesPathList.isEmpty()){
+                if (imagesPathList != null && !imagesPathList.isEmpty() && !recoverActivityFlag){
                     Intent uploadIntent = new Intent(SelectImagesActivity.this,UploadImagesActivity.class);
                     uploadIntent.putExtra("imagePaths", imagesPathList);
                     startActivity(uploadIntent);
+                } else if (recoverActivityFlag) {
+                    //TODO start recoverSeedListActivity
+                    decoding();
+                    startRecoverSeedListActivity();
+
+                } else {
+                    //TODO when nothing selected
                 }
             }
         });
@@ -188,7 +195,19 @@ public class SelectImagesActivity extends AppCompatActivity {
             Log.v("TEST", "decoding bitmap: " + bitmap);
             byte[] returnBytes = BitmapEncoder.decode(bitmap);
             String retrievedShare = new String(returnBytes);
+            shareArrayList.add(retrievedShare);
             Log.v("TEST", "decoding retrievedShare: " + retrievedShare);
         }
+    }
+
+    private ArrayList<String> shareArrayList;
+
+    public void startRecoverSeedListActivity(){
+        Intent i = new Intent(this, SeedListActivity.class); // line 247
+
+        i.putExtra("shareArrayList", shareArrayList);
+        i.putExtra("recoverActivityFlag", false);
+
+        startActivity(i);
     }
 }
