@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "stegoshareDB_nathan_test_v3";
+    private static final String DB_NAME = "stegoshareDB_nathan_test_v9";
     private static final int DB_VER = 1;
 
 
@@ -35,6 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Third Table - Date table
     public static final String DB_LAST_USED_TABLE      = "dateTable";
     public static final String COLUMN_DATE_CREATED     = "date";
+    public static final String COLUMN_HASH_OF_LIST     = "list_hash";
     public static final String COLUMN_DATE_PRIMARY_KEY = "id";
 
     public DBHelper(Context context) {
@@ -64,6 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String query_3 = String.format(
                 "create table " + DB_LAST_USED_TABLE + " (" +
                         COLUMN_DATE_PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        COLUMN_HASH_OF_LIST + " TEXT," +
                         COLUMN_DATE_CREATED + " TEXT)"
         );
 
@@ -81,7 +84,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         onCreate(sqLiteDatabase);
     }
-
 
     /* BEGIN DATABASE METHODS FOR TABLE DB_SHARE_TABLE */
 
@@ -125,19 +127,45 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public ArrayList<String> getSecretSharesStringList(){
+        ArrayList<String> shareList = new ArrayList<String>();
+        //Get a readable reference to the database
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + DB_SHARES_TABLE;
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            int key = cursor.getInt(0);
+            System.out.println("key: " + key);
+            String hash = getListHash(key);
+            Log.v("SecretShareList", "hash: " + hash);
+            do {
+                Log.v("SecretShareList",hash + cursor.getString(2));
+                shareList.add(hash + cursor.getString(2));
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        // return contact list
+        return shareList;
+    }
+
     /*END DATABASE METHODS FOR TABLE DB_SHARE_TABLE */
 
 
     /* BEGIN DATABASE METHODS FOR DB_DATE_TABLE */
 
-    public void addDate(String share){
+    public void addDateAndHash(String share, String hash){
 
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_DATE_CREATED  , share);
+        values.put(COLUMN_DATE_CREATED, share);
+        values.put(COLUMN_HASH_OF_LIST, hash);
 
         db.insert(DB_LAST_USED_TABLE, // table
                 null, //nullColumnHack
@@ -185,6 +213,24 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return key;
+    }
+
+    public String getListHash(int key){
+        //Get a readable reference to the database
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String strQuery = "SELECT " + COLUMN_HASH_OF_LIST + " FROM " + DB_LAST_USED_TABLE + " WHERE id=?";
+        Cursor cursor = db.rawQuery(strQuery, new String[] {Integer.toString(key)},null);
+
+        String hash = "";
+        if (cursor != null)
+            cursor.moveToFirst();
+       hash = cursor.getString(0);
+
+        db.close();
+        cursor.close();
+
+        return hash;
     }
 
     /*END DATABASE METHODS FOR DB_DATE_TABLE */

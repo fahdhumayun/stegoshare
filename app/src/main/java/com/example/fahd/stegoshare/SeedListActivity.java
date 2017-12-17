@@ -16,6 +16,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,7 +76,18 @@ public class SeedListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SecretShare[] ss = buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
-                addSharesToDatabase(ss);
+                try {
+                    addSharesToDatabase(ss);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    String hash = getSeedListHash(buildString());
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+
                 startSelectImagesActivity();
             }
         });
@@ -154,6 +168,18 @@ public class SeedListActivity extends AppCompatActivity {
         return res;
     }
 
+    public String getSeedListHash(String seedList) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+        md.update(seedList.getBytes(StandardCharsets.UTF_8 )); // Change this to "UTF-16" if needed
+        byte[] digest = md.digest();
+
+        String hash = String.format("%064x", new java.math.BigInteger(1, digest));
+
+        System.out.println("Hash: " + hash);
+        return hash;
+    }
+
     public SecretShare[] buildShares(String seedList, int N, int M){
 
 
@@ -192,19 +218,23 @@ public class SeedListActivity extends AppCompatActivity {
         return shares;
     }
 
-    public void addSharesToDatabase(SecretShare[] ss){
+    public void addSharesToDatabase(SecretShare[] ss) throws NoSuchAlgorithmException {
         // create a calendar
         Calendar cal = Calendar.getInstance();
 
         myDBHelper = new DBHelper(this);
 
-        String date = cal.getTime() + "";
-        myDBHelper.addDate(date);
+        String date     = cal.getTime() + "";
+        String hashList = getSeedListHash(buildString());
+        myDBHelper.addDateAndHash(date, hashList);
+        //myDBHelper.addListHash(getSeedListHash(buildString()));
 
         int date_primarykey = myDBHelper.getDatePrimaryKey(date);
 
         for(SecretShare secret:ss)
             myDBHelper.addShare(secret.getShare().toString() + secret.getNumber(), date_primarykey);
+
+        ArrayList<String> testList = myDBHelper.getSecretSharesStringList();
 
     }
 
