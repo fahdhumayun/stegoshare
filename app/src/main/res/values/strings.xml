@@ -6,6 +6,8 @@
 
     <string name="app_tapAny">Tap one of the options below to continue.</string>
 
+    <string name="listView_description">Please review the words, and to modify the word long press that word.</string>
+
     <string-array name="total_words_array">
         <item> 3 </item>
         <item> 6 </item>
