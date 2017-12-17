@@ -154,6 +154,7 @@ public class SeedListActivity extends AppCompatActivity {
         Intent i = new Intent(this, SelectImagesActivity.class); // line 247
 
         i.putExtra("user_selected_shares_n", user_selected_shares_n); // send n to SelectImagesActivity
+        i.putExtra("callingActivity", "SeedListActivity");
 
         startActivity(i);
     }
