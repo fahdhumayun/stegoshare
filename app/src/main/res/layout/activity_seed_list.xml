@@ -10,6 +10,18 @@
     android:background="@drawable/app_bg_new"
     >
 
+    <com.example.fahd.stegoshare.CustomTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/listView_description"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorAppRed"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -23,12 +35,23 @@
         />
 
     <ImageButton
-        android:id="@+id/nextButtonList"
+        android:id="@+id/id_nextButtonList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/next_button"
         />
+
+    <com.example.fahd.stegoshare.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:text="Tap on the NEXT button to continue."
+        android:textSize="12sp"
+        android:id="@+id/nextButtonTvId"
+        android:layout_marginBottom="10dp"
+        />
+
 
 </LinearLayout>
