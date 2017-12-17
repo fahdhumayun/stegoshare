@@ -127,7 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    //FORMAT: prime number length + prime number + seed list hash + secret share + share number + n + m
+    //FORMAT: seed list hash + prime number + secret share + share number + n + m
     public ArrayList<String> getSecretSharesStringList(){
         ArrayList<String> shareList = new ArrayList<String>();
         //Get a readable reference to the database
