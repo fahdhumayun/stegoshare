@@ -1,11 +1,19 @@
 // By Guy Rubinstein
+// By Fahd Humayun - Additional methods: encoding(), saveImageTemporary(), and requestPermission()
 
 package com.example.fahd.stegoshare;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -29,6 +38,10 @@ public class UploadImagesActivity extends AppCompatActivity {
     private int count;
     private boolean[] thumbnailsselection;
     private int ids[];
+
+    private ArrayList<String> tempImagePaths;
+    private ArrayList<String> sharesList;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +56,14 @@ public class UploadImagesActivity extends AppCompatActivity {
 
         imagePaths = (ArrayList<String>) getIntent().getSerializableExtra("encodedImagePaths");
         count = imagePaths.size();
+
+        tempImagePaths = new ArrayList<String>();
+        dbHelper = new DBHelper(this);
+        sharesList = dbHelper.getSecretSharesStringList();
+
+        encoding();
+
+        imagePaths = tempImagePaths;
 
         thumbnailsselection = new boolean[count];
 
@@ -108,7 +129,79 @@ public class UploadImagesActivity extends AppCompatActivity {
 
     private void cleanup(){
         this.deleteDatabase("stegoshareDB"); //delete database
+
+        // delete all of the temporary encoded files
+        for(int i = 0; i < imagePaths.size(); i++){
+            File file = new File(imagePaths.get(i));
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent); //return to MainActivity
+    }
+
+    private void encoding(){
+
+        requestPermission(this);
+
+        for(int i = 0; i < imagePaths.size(); i++){
+            File file = new File(imagePaths.get(i));
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+            String share = sharesList.get(i);
+            byte[] bytes = share.getBytes();
+            Bitmap tempBitmap = BitmapEncoder.encode(bitmap, bytes);
+            saveImageTemporary(tempBitmap, i+1);
+        }
+
+        /*
+        File file = new File(imagePaths.get(0));
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+        String share = "Hello this is the share.";
+        byte[] bytes = share.getBytes();
+        Bitmap bitmap1 = BitmapEncoder.encode(bitmap, bytes);
+        byte[] returnBytes = BitmapEncoder.decode(bitmap1);
+        String retrievedShare = new String(returnBytes);
+
+        Log.v("TEST", "retreivedShare: " + retrievedShare);
+        */
+    }
+
+    private void saveImageTemporary(Bitmap tempBitmap, int imageNumber){
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root);
+        myDir.mkdirs();
+        String fname = "ImageEncoded-"+imageNumber+".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists()) {
+            file.delete();
+        }
+        Log.i("LOAD", root + fname);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            tempBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            Log.v("TEST", "file: " + file);
+            tempImagePaths.add(file.toString());
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static final int REQUEST_WRITE_STORAGE = 112;
+
+    private void requestPermission(Activity context) {
+        boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(context,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_STORAGE);
+        } else {
+            requestPermission(this);
+        }
     }
 }

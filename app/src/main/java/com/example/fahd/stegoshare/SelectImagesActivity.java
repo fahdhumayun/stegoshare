@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -38,10 +39,21 @@ public class SelectImagesActivity extends AppCompatActivity {
     private TextView tv;
     private CustomTextView ctv;
 
+    boolean recoverActivityFlag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_images);
+
+        String callingActivity = getIntent().getStringExtra("callingActivity");
+
+        Log.v("TEST", "Calling activity: " + callingActivity);
+
+        if(callingActivity.equals("RecoverActivity")){
+            recoverActivityFlag = true;
+            handleRecoverActivity();
+        }
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.mipmap.ic_launcher);
@@ -150,5 +162,9 @@ public class SelectImagesActivity extends AppCompatActivity {
                         PERMISSION_REQUEST_READ_EXT_STORAGE);
             }
         }
+    }
+
+    public void handleRecoverActivity(){
+
     }
 }

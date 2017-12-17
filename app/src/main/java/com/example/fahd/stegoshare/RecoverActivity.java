@@ -18,6 +18,7 @@ public class RecoverActivity extends AppCompatActivity {
         //Intent i = new Intent(this, HideActivity.class);
         //Intent i = new Intent(this, SeedActivity.class);
         Intent i = new Intent(this, SelectImagesActivity.class);
+        i.putExtra("callingActivity", "RecoverActivity");
         startActivity(i);
     }
 
