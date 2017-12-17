@@ -34,9 +34,8 @@ public final class Shamir
             BigInteger accum = secret;
 
             for (int exp = 1; exp < m; exp++)
-            {
                 accum = accum.add(coeff[exp].multiply(BigInteger.valueOf(x).pow(exp).mod(prime))).mod(prime);
-            }
+
             shares[x - 1] = new SecretShare(x, accum);
             System.out.println("Share " + shares[x - 1]);
         }
@@ -59,13 +58,16 @@ public final class Shamir
                     continue; // If not the same value
 
                 int startposition = shares[formula].getNumber();
-                int nextposition = shares[count].getNumber();
+                int nextposition  = shares[count].getNumber();
 
                 numerator = numerator.multiply(BigInteger.valueOf(nextposition).negate()).mod(prime); // (numerator * -nextposition) % prime;
                 denominator = denominator.multiply(BigInteger.valueOf(startposition - nextposition)).mod(prime); // (denominator * (startposition - nextposition)) % prime;
             }
+
             BigInteger value = shares[formula].getShare();
             BigInteger tmp = value.multiply(numerator) . multiply(modInverse(denominator, prime));
+
+            System.out.println("The share: " + value);
             accum = prime.add(accum).add(tmp) . mod(prime); //  (prime + accum + (value * numerator * modInverse(denominator))) % prime;
         }
 

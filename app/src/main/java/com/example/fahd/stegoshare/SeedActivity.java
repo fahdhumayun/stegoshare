@@ -327,7 +327,6 @@ public class SeedActivity extends AppCompatActivity {
         //------------------------------------------------------------------------------------------
     }
 
-
     public ArrayList<SecretShare> generateRandomSecretShareArrayList(SecretShare[] shares){
         Random randy = new Random();
         ArrayList<SecretShare> ss_arr_list = new ArrayList<SecretShare>();
@@ -336,14 +335,24 @@ public class SeedActivity extends AppCompatActivity {
         while(closedList.size() < user_selected_shares_m) {
             int randNum = randy.nextInt((user_selected_shares_n - user_selected_shares_m) + user_selected_shares_m);
             if(!isInClosedList(closedList,randNum)) {
-                //System.out.println("Secret share: " + .)
-                System.out.println("The Share is: " + shares[randNum].getShare());
-                String temp = new String(shares[randNum].getShare().toString());
-                System.out.println("The share concatenated is: " + temp + shares[randNum].getNumber());
-                System.out.println("BigInteger.toByteArray: " + shares[randNum].getShare().toByteArray());
+                /*System.out.println("The Share is: " + shares[randNum].getShare());*/
+                //System.out.println("The share concatenated is: " + temp + shares[randNum].getNumber());
 
-                BigInteger bg  = new BigInteger(temp + shares[randNum].getNumber());
+                String temp = new String(shares[randNum].getShare().toString());
+                SecretShare test = new SecretShare(temp + shares[randNum].getNumber());
+
+                /*BigInteger bg  = new BigInteger(temp + shares[randNum].getNumber());
+
+                String bg_str  = bg.toString();
+                char lastDigit     = bg.toString().charAt(bg.toString().length() - 1);
+                String removeConcate = bg.toString().substring(0,bg.toString().length() - 1);
+
+                System.out.println("lastDigit: " + lastDigit);
+                System.out.println("removeConcate: " + removeConcate);
+
+                System.out.println("BigInteger.toByteArray: " + shares[randNum].getShare().toByteArray());
                 System.out.println("The concatenated.toByteArray: " + bg.toByteArray());
+                */
                 closedList.add(randNum);
                 ss_arr_list.add(shares[randNum]);
             }
