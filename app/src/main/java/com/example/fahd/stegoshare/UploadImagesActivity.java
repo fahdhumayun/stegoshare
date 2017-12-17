@@ -54,7 +54,7 @@ public class UploadImagesActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("  Stegoshare");
         getSupportActionBar().setSubtitle("    Hide Seed List - Step 3: Store images");
 
-        imagePaths = (ArrayList<String>) getIntent().getSerializableExtra("encodedImagePaths");
+        imagePaths = (ArrayList<String>) getIntent().getSerializableExtra("imagePaths");
         count = imagePaths.size();
 
         tempImagePaths = new ArrayList<String>();
