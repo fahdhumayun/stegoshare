@@ -22,6 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -319,13 +320,60 @@ public class SeedListActivity extends AppCompatActivity {
         return false;
     }
 
+    private ArrayList<SecretShareHelper> ssh;
+    private SecretShare[] secretShareArray;
     public void handleRecoverList(){
 
         //TODO split the share
 
+        ssh = new ArrayList<SecretShareHelper>();
         for(int i = 0; i < shareArrayList.size(); i++){
             Log.v("TEST", "shareArrayList Item at " + i + " " + shareArrayList.get(0));
+            ssh.add(new SecretShareHelper(shareArrayList.get(i)));
         }
+
+        if(isValidHash()){
+            secretShareArray = getSecretShares().toArray(new SecretShare[ssh.size()]);
+            Shamir shamir = new Shamir();
+            BigInteger result = shamir.combine(secretShareArray, ssh.get(0).getPrime());
+
+            System.out.println("result: " + result);
+            byte[] byteArr = result.toByteArray();
+            String wordList = new String(byteArr);
+
+            wordListToArrList(wordList);
+        }
+
+        else
+            System.out.println("Hello");
+
+
+    }
+
+    public boolean isValidHash( ){
+        for(int i = 0; i < ssh.size() - 1; i++){
+            if(!ssh.get(i).getHash().equals(ssh.get(i+1).getHash()))
+                return false;
+        }
+        return true;
+    }
+
+
+    public ArrayList<SecretShare> getSecretShares(){
+        ArrayList<SecretShare> secretSharesArrayList = new ArrayList<SecretShare>();
+        for(int i = 0; i < ssh.size(); i++){
+            secretSharesArrayList.add(new SecretShare(ssh.get(i).getShareNumber(), ssh.get(i).getShare()));
+        }
+
+        return secretSharesArrayList;
+    }
+
+    private ArrayList<String> recoverSeedList = new ArrayList<String>();
+    
+    public void wordListToArrList(String wordList){
+        String[] recover = wordList.split("\n");
+
+        recoverSeedList = new ArrayList<String>(Arrays.asList(recover));
     }
 
 }
