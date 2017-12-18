@@ -1,4 +1,5 @@
 // By Nathan Morgenstern
+// SecretShareHelper (Class) - Used to store the data into the database.
 
 package com.example.fahd.stegoshare;
 
@@ -75,12 +76,4 @@ public class SecretShareHelper {
         this.hash = hash;
     }
 
-    public void printAll(){
-        System.out.println("hash: " + hash);
-        System.out.println("prime: " + prime.toString());
-        System.out.println("share: " + share.toString());
-        System.out.println("share number: " + shareNumber);
-        System.out.println("n: " + totalShares);
-        System.out.println("m: " + requiredShares);
-    }
 }

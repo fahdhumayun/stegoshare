@@ -1,4 +1,6 @@
 // By Nathan Morgenstern
+// Shamir (Class) - Used in both hiding and recovering process to create secret shares from the words
+// as well as extract information from the secret shares.
 
 package com.example.fahd.stegoshare;
 
@@ -10,7 +12,6 @@ public final class Shamir
 {
     public static SecretShare[] split(final BigInteger secret, int m, int n, BigInteger prime, Random random)
     {
-        System.out.println("Prime Number: " + prime);
 
         final BigInteger[] coeff = new BigInteger[m];
         coeff[0] = secret;
@@ -37,7 +38,6 @@ public final class Shamir
                 accum = accum.add(coeff[exp].multiply(BigInteger.valueOf(x).pow(exp).mod(prime))).mod(prime);
 
             shares[x - 1] = new SecretShare(x, accum);
-            System.out.println("Share " + shares[x - 1]);
         }
 
         return shares;
@@ -67,18 +67,12 @@ public final class Shamir
             BigInteger value = shares[formula].getShare();
             BigInteger tmp = value.multiply(numerator) . multiply(modInverse(denominator, prime));
 
-            System.out.println("The share: " + value);
             accum = prime.add(accum).add(tmp) . mod(prime); //  (prime + accum + (value * numerator * modInverse(denominator))) % prime;
         }
 
-        System.out.println("The secret is: " + accum);
-        System.out.println("The secret is: " + accum.toByteArray());
 
         //String.format("%02x", byteValue);
         String recon = new String( accum.toByteArray());
-        System.out.println("reconstructed: \n" + recon);
-        //System.out.println("hex: " + String.format("%02x", accum.toByteArray()));
-        System.out.println("---------------------------------------------\n");
 
         return accum;
     }
@@ -110,16 +104,6 @@ public final class Shamir
             finalString += String.format("%02x", byteArr[i]);
 
         return finalString;
-    }
-
-    public static void printSecretShares(final SecretShare[] ss){
-
-        for(int i = 0; i < ss.length; i++){
-            //System.out.println("BigInteger.toByteArray: " + ss[i].getShare().toByteArray());
-            System.out.println("StringBuilder: " + stringBuilder(ss[i].getShare().toByteArray()));
-            //String recon = new String( ss[i].getShare().toByteArray());
-            //System.out.println("reconstructed: " + recon);
-        }
     }
 
 }

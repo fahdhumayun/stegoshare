@@ -1,5 +1,12 @@
 // By Fahd Humayun
-//Encryption and decryption popups implemented by Nathan Morgenstern
+// Encryption and decryption popups implemented by Nathan Morgenstern
+// SeedListActivity (Activity) - This activity is called by SeedActivity in the hiding process.
+// and by the SelectImagesActivity in the recovery process.
+// This displays the list of words received from the SeedActivity in the hiding process and then
+// generates the shares for that list. The words in the list can also be modified by the user
+// (in the hiding process only). After the generation of shares the SelectImagesActivity is started.
+// When called from the SelectImagesActivity in recovery process, it displays the words from the shares.
+// Returns back to Main Menu when the words list is displayed in the recovery process.
 
 package com.example.fahd.stegoshare;
 
@@ -8,8 +15,6 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -17,11 +22,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import org.jasypt.util.text.BasicTextEncryptor;
-
-import java.io.File;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -111,7 +112,6 @@ public class SeedListActivity extends AppCompatActivity {
         } else {
             DBHelper dbHelper = new DBHelper(this);
 
-            Log.v("LENGTH", "shareArrayList.get(0).split(\",\").length: " + shareArrayList.get(0).split(",").length);
             if(shareArrayList.get(0).split(",").length < 4){
                 popupDecryptMessage();
             }
@@ -225,7 +225,6 @@ public class SeedListActivity extends AppCompatActivity {
 
         String hash = String.format("%064x", new java.math.BigInteger(1, digest));
 
-        System.out.println("Hash: " + hash);
         return hash;
     }
 
@@ -281,10 +280,6 @@ public class SeedListActivity extends AppCompatActivity {
         int date_primarykey = myDBHelper.getDatePrimaryKey(date);
 
         Boolean hasPass = myDBHelper.hasPassword();
-        if(hasPass)
-            Log.v("TEST", "IT HAS A PASSWORD");
-        else
-            Log.v("TEST", "IT DOESNT");
 
         for(SecretShare secret:ss)
             myDBHelper.addShare(shareBuilder(secret.getShare(),secret.getNumber(),
@@ -297,7 +292,6 @@ public class SeedListActivity extends AppCompatActivity {
     public String shareBuilder(BigInteger share, int shareNumber, BigInteger prime, int n, int m){
         String share_string = prime.toString() + "," + share.toString() + "," + shareNumber + "," + n + "," +  m;
 
-        System.out.println(share_string);
         return share_string;
     }
 
@@ -309,8 +303,6 @@ public class SeedListActivity extends AppCompatActivity {
         while(closedList.size() < user_selected_shares_m) {
             int randNum = randy.nextInt((user_selected_shares_n - user_selected_shares_m) + user_selected_shares_m);
             if(!isInClosedList(closedList,randNum)) {
-                /*System.out.println("The Share is: " + shares[randNum].getShare());*/
-                //System.out.println("The share concatenated is: " + temp + shares[randNum].getNumber());
 
                 String temp = new String(shares[randNum].getShare().toString());
                 SecretShare test = new SecretShare(temp + shares[randNum].getNumber());
@@ -344,10 +336,8 @@ public class SeedListActivity extends AppCompatActivity {
     }
 
     public void handleRecoverList(){
-        //TODO split the share
         ssh = new ArrayList<SecretShareHelper>();
         for(int i = 0; i < shareArrayList.size(); i++){
-            Log.v("TEST", "shareArrayList Item at " + i + " " + shareArrayList.get(0));
             ssh.add(new SecretShareHelper(shareArrayList.get(i)));
         }
 
@@ -359,7 +349,6 @@ public class SeedListActivity extends AppCompatActivity {
                 Shamir shamir = new Shamir();
                 BigInteger result = shamir.combine(secretShareArray, ssh.get(0).getPrime());
 
-                System.out.println("result: " + result);
                 byte[] byteArr = result.toByteArray();
                 String wordList = new String(byteArr);
 
@@ -450,8 +439,7 @@ public class SeedListActivity extends AppCompatActivity {
         alert.setView(edittext);
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //What ever you want to do with the value
-                //OR
+
                 String textValue = edittext.getText().toString();
 
                 if(!textValue.equals("")) {
@@ -484,8 +472,7 @@ public class SeedListActivity extends AppCompatActivity {
         alert.setView(edittext);
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //What ever you want to do with the value
-                //OR
+
                 String textValue = edittext.getText().toString();
 
                 if(!textValue.equals("")) {
@@ -546,7 +533,6 @@ public class SeedListActivity extends AppCompatActivity {
             try {
                 plainTextList.add(textEncryptor.decrypt(encryptedList.get(i)));
             } catch(Exception e){
-                //popupRetryMessage();
             }
         }
         return plainTextList;

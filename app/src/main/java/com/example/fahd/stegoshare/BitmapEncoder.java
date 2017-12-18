@@ -1,4 +1,5 @@
 // Resource: https://github.com/stealthcopter/steganography
+// BitmapEncoder (Class) - Used for the decoding and encoding the images.
 
 package com.example.fahd.stegoshare;
 
@@ -41,8 +42,6 @@ public class BitmapEncoder {
 
         byte[] header = createHeader(bytes.length);
 
-        // Pad the byte array by so it is divisible by 24 ( 8 bits per byte * the 3 color channels)
-        // this wastes a trivial amount of space but makes code tidier.
         if (bytes.length % 24 != 0) {
             bytes = Arrays.copyOf(bytes, bytes.length + (24 - bytes.length % 24));
         }

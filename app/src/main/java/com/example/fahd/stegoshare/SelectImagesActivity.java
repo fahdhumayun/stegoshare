@@ -1,4 +1,7 @@
 // By Guy Rubinstein
+// and By Fahd Humayun additional methods (handleRecoverActivity() and decoding()) when used for recovering process.
+// SelectImagesActivity (Activity) - Accessed in both hiding and recovering process, it is used
+// for importing the images from the phone's photo gallery.
 
 package com.example.fahd.stegoshare;
 
@@ -52,8 +55,6 @@ public class SelectImagesActivity extends AppCompatActivity {
 
         String callingActivity = getIntent().getStringExtra("callingActivity");
 
-        Log.v("TEST", "Calling activity: " + callingActivity);
-
         if(callingActivity.equals("RecoverActivity")){
             recoverActivityFlag = true;
             shareArrayList = new ArrayList<String>();
@@ -103,15 +104,16 @@ public class SelectImagesActivity extends AppCompatActivity {
                     uploadIntent.putExtra("imagePaths", imagesPathList);
                     startActivity(uploadIntent);
                 } else if (imagesPathList != null && !imagesPathList.isEmpty() && recoverActivityFlag) {
-                    //TODO start recoverSeedListActivity
                     try {
                         decoding();
                         startRecoverSeedListActivity();
-                    }catch(Exception e){popupRetryMessage();}
+                    }catch(Exception e){
+                        popupRetryMessage();
+                    }
 
 
                 } else {
-                    //TODO when nothing selected
+                    // do nothing
                 }
             }
         });
@@ -126,8 +128,7 @@ public class SelectImagesActivity extends AppCompatActivity {
         alert.setIcon(android.R.drawable.ic_dialog_alert);
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //startSelectImagesActivityForRetry();
-                return;
+                reRunActivity();
             }
         });
 
@@ -137,7 +138,17 @@ public class SelectImagesActivity extends AppCompatActivity {
             }
         });
 
+        alert.setCancelable(false);
+
         alert.show();
+
+    }
+
+    private void reRunActivity(){
+        Intent i = new Intent(this, SelectImagesActivity.class);
+        i.putExtra("callingActivity", "RecoverActivity");
+        startActivity(i);
+        finish();
     }
 
     private void openGallery(){
@@ -217,20 +228,14 @@ public class SelectImagesActivity extends AppCompatActivity {
         tv.setTypeface(typeface);
     }
 
-    //test method
     public void decoding(){
         for(int i = 0; i < imagesPathList.size(); i++){
             File file = new File(imagesPathList.get(i));
-            Log.v("TEST", "decoding file: " + file);
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-            Log.v("TEST", "decoding bitmap: " + bitmap);
             byte[] returnBytes = BitmapEncoder.decode(bitmap);
-            Log.v("TEST", "decoding returnBytes: " + returnBytes);
             String retrievedShare = new String(returnBytes);
-            Log.v("TEST", "decoding retreivedShare: " + retrievedShare);
             shareArrayList.add(retrievedShare);
-            Log.v("TEST", "decoding retrievedShare: " + retrievedShare);
         }
     }
 

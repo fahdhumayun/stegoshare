@@ -1,4 +1,6 @@
 // By Nathan Morgenstern
+// SeedActivity (Activity) - This is the first activity of the hide seed list process.
+// It handles the input of the seeds (words), and then starts the SeedListActivity to display the list.
 
 package com.example.fahd.stegoshare;
 
@@ -7,7 +9,6 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -106,15 +107,13 @@ public class SeedActivity extends AppCompatActivity {
         totalWords.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
-                Log.v("WORDS", "Change detected! Selected: " + totalWords.getItemAtPosition(position).toString() );
                 initialize(Integer.parseInt(totalWords.getItemAtPosition(position).toString()));
                 setButtonVisibility();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                // do nothing
             }
 
         });
@@ -122,14 +121,12 @@ public class SeedActivity extends AppCompatActivity {
         totalShares.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
-                Log.v("TOT_SHARES", "Change detected! Selected: " + totalShares.getItemAtPosition(position).toString() );
                 user_selected_shares_n = Integer.parseInt(requiredShares.getItemAtPosition(position).toString());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                // do nothing
             }
 
         });
@@ -137,14 +134,12 @@ public class SeedActivity extends AppCompatActivity {
         requiredShares.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
-                Log.v("REQ_SHARES", "Change detected! Selected: " + requiredShares.getItemAtPosition(position).toString() );
                 user_selected_shares_m = Integer.parseInt(requiredShares.getItemAtPosition(position).toString());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                // do nothing
             }
 
         });
@@ -192,7 +187,6 @@ public class SeedActivity extends AppCompatActivity {
         }
 
         if(!seedWord.getText().toString().equals("")) {
-            //Log.v("MAIN", "Setting string: " + seedWord.getText().toString() + "at index: " + (counter - 1) + "\n");
             seedList[counter - 1] =  counter + ". " + seedWord.getText().toString();
         }
 
@@ -231,7 +225,6 @@ public class SeedActivity extends AppCompatActivity {
         if(!seedWord.getText().toString().equals("") && !containsNullStr(seedList) && (user_selected_shares_m <= user_selected_shares_n)) {
             int counter = 1;
             for (String s : seedList) {
-                Log.v("SEEDLIST", counter + ". " + s);
                 counter++;
             }
             seedArrayList = new ArrayList<String>(Arrays.asList(seedList));

@@ -1,11 +1,11 @@
 // By Fahd Humayun
+// CustomTextView (Class) - Used for custom font in the application.
 
 package com.example.fahd.stegoshare;
 
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * Created by Fahd on 12/15/2017.

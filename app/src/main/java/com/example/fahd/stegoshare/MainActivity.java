@@ -1,28 +1,5 @@
 // By Fahd Humayun
 
-package com.example.fahd.stegoshare;
-
-import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.support.annotation.IdRes;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
 /*
 MainActivity:
 It is the main screen of the app when loaded.
@@ -50,6 +27,26 @@ Methods:
     iv. startRecoverActivity(): void
 
 */
+
+package com.example.fahd.stegoshare;
+
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.support.annotation.IdRes;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -185,9 +182,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
-    startHideActivity() method
-    start the HideActivity using Intent to begin the process of hiding the seed list.
+    startSeedActivity() method
+    start the SeedActivity using Intent to begin the process of hiding the seed list.
     called from the hideImageButton.onClickListener().
+    When the Help RadioButton is OFF then go directly to the SeedActivity
 
     @params
     none
@@ -202,9 +200,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*
+    startHideActivity() method
+    start the HideActivity using Intent to begin the process of hiding the seed list.
+    called from the hideImageButton.onClickListener().
+    When the Help RadioButton is ON then go to the HideActivity and display the steps first.
+
+    @params
+    none
+
+    @return
+    void
+     */
+
+    private void startHideActivity(){
+        Intent i = new Intent(this, HideActivity.class);
+        startActivity(i);
+    }
+
+    /*
     startRecoverActivity() method
     start the RecoverActivity using Intent to begin the process of recovering the seed list.
     called from the recoverImageButton.onClickListener().
+    When the Help RadioButton is ON then go to the RecoverActivity and display the steps first.
 
     @params
     none
@@ -218,15 +235,24 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    /*
+    startSelectImagesActivity() method
+    start the SelectImagesActivityActivity using Intent to begin the process of recovering the seed list.
+    called from the recoverImageButton.onClickListener().
+    When the Help RadioButton is OFF then go directly to the SelectImagesActivity.
+
+    @params
+    none
+
+    @return
+    void
+     */
+
     private void startSelectImagesActivity(){
         Intent i = new Intent(this, SelectImagesActivity.class);
         i.putExtra("callingActivity", "RecoverActivity");
         startActivity(i);
     }
 
-    private void startHideActivity(){
-        Intent i = new Intent(this, HideActivity.class);
-        startActivity(i);
-    }
 
 }

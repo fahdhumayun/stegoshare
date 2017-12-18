@@ -1,4 +1,5 @@
 // By Fahd Humayun and Nathan Morgenstern
+// DBHelper (Class) - Used for temporarily storing the generated shares and the date/time
 
 package com.example.fahd.stegoshare;
 
@@ -7,7 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -143,11 +143,8 @@ public class DBHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             int key = cursor.getInt(1);
-            System.out.println("key: " + key);
             String hash = getListHash(key);
-            Log.v("SecretShareList", "hash: " + hash);
             do {
-                Log.v("SecretShareList",hash + ","  + cursor.getString(2));
                 shareList.add(hash + ","  +  cursor.getString(2));
             } while (cursor.moveToNext());
         }
@@ -242,8 +239,6 @@ public class DBHelper extends SQLiteOpenHelper {
         //Get a readable reference to the database
         SQLiteDatabase db = this.getReadableDatabase();
 
-        //+ DB_SHARES_TABLE + " WHERE date_id = (SELECT MAX(date_id) FROM sharesTable)";
-        //String strQuery = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id=?";
         String strQuery   = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id = (SELECT MAX(id) FROM dateTable)";
 
         Cursor cursor = db.rawQuery(strQuery,null);
@@ -267,8 +262,6 @@ public class DBHelper extends SQLiteOpenHelper {
         //Get a readable reference to the database
         SQLiteDatabase db = this.getReadableDatabase();
 
-        //+ DB_SHARES_TABLE + " WHERE date_id = (SELECT MAX(date_id) FROM sharesTable)";
-        //String strQuery = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id=?";
         String strQuery   = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id = (SELECT MAX(id) FROM dateTable)";
 
         Cursor cursor = db.rawQuery(strQuery,null);

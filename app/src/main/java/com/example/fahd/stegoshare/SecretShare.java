@@ -1,4 +1,5 @@
 // By Nathan Morgenstern
+// SecretShare (Class) - Used as a helper class to the Shamir (i.e. Shamir secret sharing algorithm)
 
 package com.example.fahd.stegoshare;
 
@@ -13,8 +14,6 @@ public class SecretShare {
         this.number = number;
         this.share  = share;
     }
-
-    //TODO: need to know how many digits the share will have, naively uses one digit may need 2 if 9+
 
     public SecretShare(String s){
 

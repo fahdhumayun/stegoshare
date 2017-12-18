@@ -1,8 +1,9 @@
-package com.example.fahd.stegoshare;
+//Async task implemented by Nathan Morgenstern including dialog and progress update
+//All logic for uploading the images by Guy Rubinstein except those mentioned below
+//Fahd Humayun: Additional methods: encoding(), saveImageTemporary(),
+// and requestPermission() for writing to external storage temporarily.
 
-//Async task implemented by nathan morgenstern including dialog and progress update
-//All logic by Guy Rubinstein except those mentioned below
-//Fahd Humayun: Additional methods: encoding(), saveImageTemporary(), and requestPermission()
+package com.example.fahd.stegoshare;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,13 +20,10 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -92,9 +90,7 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
     @Override
     protected void onProgressUpdate(Object... o){
         dialog.setMessage("Encoding Image... " + ((int)o[0] + 1) + "/" + total);
-        // Show the result
-        //TextView tv = (TextView)a.findViewById(R.id.hworld);
-        //tv.setText("" + o[0] + "/4: " + o[1]);
+
     }
 
     private void requestPermission(Activity context) {
@@ -104,7 +100,7 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_WRITE_STORAGE);
         } else {
-            //requestPermission(this);
+            // do nothing
         }
     }
 
@@ -117,12 +113,9 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
         if (file.exists()) {
             file.delete();
         }
-        //Log.i("LOAD", root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
             tempBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            Log.v("TEST", "saving file: " + file);
-            Log.v("TEST", "saving bitmap: " + tempBitmap);
             tempImagePaths.add(file.toString());
             out.flush();
             out.close();
@@ -136,16 +129,12 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
 
         for (int i = 0; i < imagePaths.size(); i++) {
             File file = new File(imagePaths.get(i));
-            Log.v("TEST", "encoding file: " + file);
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
             String share = sharesList.get(i);
-            Log.v("TEST", "share " + (i + 1) + " " + share);
             byte[] bytes = share.getBytes();
             Bitmap tempBitmap = BitmapEncoder.encode(bitmap, bytes);
-            Log.v("TEST", "encoding bitmap: " + bitmap);
             saveImageTemporary(tempBitmap, i + 1);
-
             publishProgress(i);
         }
     }
@@ -210,7 +199,7 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
             ArrayList<Uri> selectedImageUris = new ArrayList<>();
             for (String path : selectedImagePaths){
                 selectedImageUris.add(FileProvider.getUriForFile(a,
-                        "com.example.fahd.stegoshare.fileprovider", // <-- changed this
+                        "com.example.fahd.stegoshare.fileprovider",
                         new File(path)));
             }
 

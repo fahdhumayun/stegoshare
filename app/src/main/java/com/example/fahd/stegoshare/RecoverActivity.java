@@ -1,9 +1,10 @@
 // By Fahd Humayun
+// RecoverActivity (Activity) - Used to show the beginning steps of the process,
+// and then proceeds with the process by starting SelectImagesActivity.
 
 package com.example.fahd.stegoshare;
 
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;

@@ -1,30 +1,19 @@
 // By Guy Rubinstein
+// CustomPhotoGalleryActivity (Activity) - Used for importing the images from phone gallery to the application
 
 package com.example.fahd.stegoshare;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 //https://stackoverflow.com/questions/23426113/how-to-select-multiple-images-from-gallery-in-android/23426985#23426985
 public class CustomPhotoGalleryActivity extends AppCompatActivity {
@@ -111,8 +100,6 @@ public class CustomPhotoGalleryActivity extends AppCompatActivity {
                 if (cnt != numberOfParts && !recoverActivityFlag) {
                     Toast.makeText(getApplicationContext(), "Select " + numberOfParts + " images.", Toast.LENGTH_LONG).show();
                 } else {
-
-                    Log.d("SelectedImages", selectImages);
                     Intent i = new Intent();
                     i.putExtra("data", selectImages);
                     setResult(Activity.RESULT_OK, i);

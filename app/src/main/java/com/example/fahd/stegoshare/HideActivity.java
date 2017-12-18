@@ -1,4 +1,6 @@
 // By Fahd Humayun
+// HideActivity (Activity) - Used in the beginning of the hide seed list process.
+// Handles the steps i.e. the walkthrough/tutorial of the hiding list procedure.
 
 package com.example.fahd.stegoshare;
 
