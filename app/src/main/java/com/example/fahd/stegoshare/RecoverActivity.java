@@ -45,27 +45,24 @@ public class RecoverActivity extends AppCompatActivity {
                     skipStepsButton.setBackground(null);
                 }
 
+                stepsImageView.setBackground(null);
+
                 switch(counter){
                     case 1: stepsImageView.setImageResource(R.drawable.recovery_steps_1);
                         break;
                     case 2:
-                        stepsImageView.setBackground(null);
                         stepsImageView.setImageResource(R.drawable.recovery_steps_2);
                         break;
                     case 3:
-                        stepsImageView.setBackground(null);
                         stepsImageView.setImageResource(R.drawable.recovery_steps_3);
                         break;
                     case 4:
-                        stepsImageView.setBackground(null);
                         stepsImageView.setImageResource(R.drawable.recovery_steps_4);
                         break;
                     case 5:
-                        stepsImageView.setBackground(null);
                         stepsImageView.setImageResource(R.drawable.recovery_steps_5);
                         break;
                     default:
-                        stepsImageView.setBackground(null);
                         stepsImageView.setImageResource(R.drawable.recovery_steps_1);
                 }
 
@@ -87,7 +84,7 @@ public class RecoverActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setTitle("  Stegoshare");
-        getSupportActionBar().setSubtitle("    Recover Seed List");
+        getSupportActionBar().setSubtitle("    Recover Seed List Steps");
     }
 
     private void startSelectImagesActivity(){

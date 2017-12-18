@@ -13,13 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:id="@+id/id_iv"
+        android:id="@+id/id_hideStepsImageView"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="12dp"
         android:layout_marginRight="12dp"
         android:background="@drawable/hide_steps_1"
-
         />
 
     <LinearLayout
@@ -28,31 +27,27 @@
         android:orientation="horizontal"
         android:layout_weight="0.2"
         >
-
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/id_skipButtonHide"
-            android:background="@drawable/skip_button"
-            android:clickable="true"
-            android:layout_marginBottom="10dp"
             android:layout_weight="1"
+            android:id="@+id/id_hideSkipButton"
+            android:background="@drawable/skip_button"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
             />
 
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/id_nextStepButtonHide"
+            android:layout_weight="1"
+            android:id="@+id/id_hideNextStepButton"
             android:background="@drawable/next_step_button"
             android:layout_marginLeft="100dp"
-            android:clickable="true"
             android:layout_marginBottom="10dp"
-            android:layout_weight="1"
+            android:clickable="true"
             />
 
-
-
     </LinearLayout>
-
 
 </LinearLayout>

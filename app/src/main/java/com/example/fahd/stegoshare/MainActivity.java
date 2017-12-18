@@ -12,6 +12,7 @@ import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -107,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 switch(i){
                     case R.id.id_onRadioButton: {
                         isHelpOn = true;
-
                         break;
                     }
                     case R.id.id_offRadioButton: {
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
         radioGroup = (RadioGroup) findViewById(R.id.id_radioGroup);
         onRadioBtn = (RadioButton) findViewById(R.id.id_onRadioButton);
-        offRadioBtn = (RadioButton) findViewById(R.id.id_onRadioButton);
+        offRadioBtn = (RadioButton) findViewById(R.id.id_offRadioButton);
     }
 
     /*
