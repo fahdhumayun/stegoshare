@@ -81,7 +81,7 @@ public class SeedListActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("  Stegoshare");
             getSupportActionBar().setSubtitle("    Hide Seed List - Step 1: Input words list");
 
-            nextButton.setImageResource(R.drawable.next_button);
+            nextButton.setImageResource(R.drawable.next_step_button);
 
             seedArrayList = new ArrayList<String>(getIntent().getStringArrayListExtra("seedArrayList"));
         }
@@ -119,7 +119,12 @@ public class SeedListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                popupEncryptMessage();
+                if(!recoverActivityFlag){
+                    popupEncryptMessage();
+                } else {
+                    popupFinishMessage();
+                }
+
             }
         });
 
@@ -531,9 +536,13 @@ public class SeedListActivity extends AppCompatActivity {
         textEncryptor.setPassword(pass);
         ArrayList<String> plainTextList  = new ArrayList<String>();
 
-        for(int i = 0; i < encryptedList.size(); i++)
-            plainTextList.add(textEncryptor.decrypt(encryptedList.get(i)));
-
+        for(int i = 0; i < encryptedList.size(); i++) {
+            try {
+                plainTextList.add(textEncryptor.decrypt(encryptedList.get(i)));
+            } catch(Exception e){
+                //popupRetryMessage();
+            }
+        }
         return plainTextList;
     }
 

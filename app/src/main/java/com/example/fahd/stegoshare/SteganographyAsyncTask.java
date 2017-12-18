@@ -222,7 +222,7 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
             a.startActivity(Intent.createChooser(shareIntent, "Send..."));
         }
         if (selectedImagePaths.isEmpty()) {
-            Toast.makeText(a, "Please select the images to be uplaoded/stored.", Toast.LENGTH_LONG).show();
+            Toast.makeText(a, "Please select the images to be uploaded/stored.", Toast.LENGTH_LONG).show();
         }
 
     }
