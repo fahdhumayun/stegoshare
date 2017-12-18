@@ -54,46 +54,12 @@ public class UploadImagesActivity extends AppCompatActivity {
         getSupportActionBar().setSubtitle("    Hide Seed List - Step 3: Store images");
 
         imagePaths = (ArrayList<String>) getIntent().getSerializableExtra("imagePaths");
-        count = imagePaths.size();
-
-        tempImagePaths = new ArrayList<String>();
         dbHelper = new DBHelper(this);
         sharesList = dbHelper.getSecretSharesStringList();
 
-        encoding();
+        SteganographyAsyncTask asyncTask = new SteganographyAsyncTask(this, sharesList, imagePaths);
+        asyncTask.execute();
 
-        imagePaths = tempImagePaths;
-
-        thumbnailsselection = new boolean[count];
-
-        imageAdapter = new ImageAdapter(this, thumbnailsselection, imagePaths, count);
-        grdImages= (GridView) findViewById(R.id.grdImages);
-        grdImages.setAdapter(imageAdapter);
-
-        ImageButton uploadButton = (ImageButton) findViewById(R.id.uploadButton);
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                share();
-            }
-        });
-
-        ImageButton doneButton = (ImageButton) findViewById(R.id.doneButton);
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(UploadImagesActivity.this)
-                        .setTitle("Finished")
-                        .setMessage("Are you done? All data will be deleted and cannot be recovered.")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                cleanup();
-                            }})
-                        .setNegativeButton(android.R.string.no
-                                , null).show();
-            }
-        });
 
     }
 
