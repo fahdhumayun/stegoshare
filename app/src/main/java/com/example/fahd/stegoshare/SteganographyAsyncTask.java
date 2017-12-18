@@ -83,7 +83,7 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
 
     protected void onPreExecute() {
         dialog = new ProgressDialog(a);
-        dialog.setMessage("Encoding Image...1/4");
+        dialog.setMessage("Encoding Image...");
         dialog.setIndeterminate(true);
         dialog.show();
         super.onPreExecute();
@@ -91,7 +91,7 @@ public class SteganographyAsyncTask extends AsyncTask<Object,Object,Object>{
 
     @Override
     protected void onProgressUpdate(Object... o){
-        dialog.setMessage("Encoding Image... " + o[0] + "/" + total);
+        dialog.setMessage("Encoding Image... " + ((int)o[0] + 1) + "/" + total);
         // Show the result
         //TextView tv = (TextView)a.findViewById(R.id.hworld);
         //tv.setText("" + o[0] + "/4: " + o[1]);
