@@ -70,7 +70,6 @@ public class SeedActivity extends AppCompatActivity {
             user_selected_shares_m = savedInstanceState.getInt("user_selected_shares_m");
             user_selected_shares_n = savedInstanceState.getInt("user_selected_shares_n");
             SEED_SIZE              = savedInstanceState.getInt("SEED_SIZE");
-            System.out.println("SEED_SIZE: " + SEED_SIZE);
         }
 
         confirmButton.setOnClickListener(new View.OnClickListener(){
@@ -89,10 +88,6 @@ public class SeedActivity extends AppCompatActivity {
             seedList = savedInstanceState.getStringArray("seedList");
             counter  = savedInstanceState.getInt("counter");
 
-            Log.v("SEED ACTIVITY", "Counter: " + counter);
-            Log.v("SEED ACTIVITY", "m: " + user_selected_shares_m);
-            Log.v("SEED ACTIVITY", "n: " + user_selected_shares_n);
-
             seedCount.setText(counter + ".");
             seedWord.setHint("word " + counter);
 
@@ -106,7 +101,6 @@ public class SeedActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState (Bundle outState)
     {
-        Log.v("SeedActivity", "SavedInstance Called");
         outState.putString("seedWord", seedWord.getText().toString());
         outState.putStringArray("seedList", seedList);
         outState.putInt("counter", counter);
@@ -286,7 +280,6 @@ public class SeedActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
             if (userSelect) {
-                Log.v("TOT_SHARES", "Change detected! Selected: " + totalShares.getItemAtPosition(position).toString());
                 user_selected_shares_n = Integer.parseInt(totalShares.getItemAtPosition(position).toString());
                 userSelect = false;
             }
@@ -312,7 +305,6 @@ public class SeedActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (userSelect) {
-                Log.v("REQ_SHARES", "Change detected! Selected: " + requiredShares.getItemAtPosition(position).toString() );
                 user_selected_shares_m = Integer.parseInt(requiredShares.getItemAtPosition(position).toString());
                 userSelect = false;
             }
@@ -337,7 +329,6 @@ public class SeedActivity extends AppCompatActivity {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (userSelect) {
-                Log.v("WORDS", "Change detected! Selected: " + totalWords.getItemAtPosition(position).toString() );
                 initialize(Integer.parseInt(totalWords.getItemAtPosition(position).toString()));
                 setButtonVisibility();
                 userSelect = false;
