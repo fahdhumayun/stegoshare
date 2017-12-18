@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "stegoshareDB_nathan_test_v9";
+    private static final String DB_NAME = "stegoshareDB";
     private static final int DB_VER = 1;
 
 
