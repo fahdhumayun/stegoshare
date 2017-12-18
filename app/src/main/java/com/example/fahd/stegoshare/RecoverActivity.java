@@ -20,6 +20,7 @@ public class RecoverActivity extends AppCompatActivity {
         Intent i = new Intent(this, SelectImagesActivity.class);
         i.putExtra("callingActivity", "RecoverActivity");
         startActivity(i);
+        finish();
     }
 
     private void initialization(){

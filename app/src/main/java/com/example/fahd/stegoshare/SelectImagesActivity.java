@@ -39,6 +39,7 @@ public class SelectImagesActivity extends AppCompatActivity {
     private Hashtable<String, Integer> pathToID;
     private TextView tv;
     private CustomTextView ctv;
+    private ImageButton nextButton;
 
     boolean recoverActivityFlag = false;
 
@@ -90,7 +91,8 @@ public class SelectImagesActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton nextButton = (ImageButton) findViewById((R.id.nextButton));
+        nextButton = (ImageButton) findViewById((R.id.nextButton));
+        nextButton.setBackground(null);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +100,7 @@ public class SelectImagesActivity extends AppCompatActivity {
                     Intent uploadIntent = new Intent(SelectImagesActivity.this,UploadImagesActivity.class);
                     uploadIntent.putExtra("imagePaths", imagesPathList);
                     startActivity(uploadIntent);
-                } else if (recoverActivityFlag) {
+                } else if (imagesPathList != null && !imagesPathList.isEmpty() && recoverActivityFlag) {
                     //TODO start recoverSeedListActivity
                     decoding();
                     startRecoverSeedListActivity();
@@ -150,6 +152,8 @@ public class SelectImagesActivity extends AppCompatActivity {
                 lp.setMargins(10, 10, 10, 20);
                 imageView.setLayoutParams(lp);
                 lnrImages.addView(imageView);
+                nextButton.setImageResource(R.drawable.next_button);
+                ctv.setText("Tap on the GALLERY button to replace the images.");
             }
         }
     }
@@ -212,5 +216,6 @@ public class SelectImagesActivity extends AppCompatActivity {
         i.putExtra("recoverActivityFlag", true);
 
         startActivity(i);
+        finish();
     }
 }

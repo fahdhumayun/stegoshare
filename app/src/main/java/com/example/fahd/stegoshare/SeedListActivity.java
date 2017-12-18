@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -53,6 +54,12 @@ public class SeedListActivity extends AppCompatActivity {
 
         recoverActivityFlag = getIntent().getBooleanExtra("recoverActivityFlag", false);
 
+
+        wordsListView = (ListView) findViewById(R.id.id_wordsListView);
+        nextButton = (ImageButton) findViewById(R.id.id_nextButtonList);
+
+        ctv = (CustomTextView) findViewById(R.id.nextButtonTvId);
+
         if(recoverActivityFlag){
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setLogo(R.mipmap.ic_launcher);
@@ -62,6 +69,10 @@ public class SeedListActivity extends AppCompatActivity {
 
             shareArrayList = getIntent().getStringArrayListExtra("shareArrayList");
 
+            nextButton.setImageResource(R.drawable.finish_button);
+
+            ctv.setText("Tap on the FINISH button to go back to the Main Menu");
+
         } else {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setLogo(R.mipmap.ic_launcher);
@@ -69,15 +80,13 @@ public class SeedListActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("  Stegoshare");
             getSupportActionBar().setSubtitle("    Hide Seed List - Step 1: Input words list");
 
+            nextButton.setImageResource(R.drawable.next_button);
 
             seedArrayList = new ArrayList<String>(getIntent().getStringArrayListExtra("seedArrayList"));
         }
 
         user_selected_shares_n = getIntent().getIntExtra("user_selected_shares_n", -1);
         user_selected_shares_m = getIntent().getIntExtra("user_selected_shares_m", -1);
-
-        wordsListView = (ListView) findViewById(R.id.id_wordsListView);
-        nextButton = (ImageButton) findViewById(R.id.id_nextButtonList);
 
 
         if(!recoverActivityFlag) {
@@ -103,24 +112,29 @@ public class SeedListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                SecretShare[] ss = buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
-                try {
-                    addSharesToDatabase(ss);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
+
+                if(!recoverActivityFlag){
+                    SecretShare[] ss = buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
+                    try {
+                        addSharesToDatabase(ss);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        String hash = getSeedListHash(buildString());
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+
+                    startSelectImagesActivity();
+                } else {
+                    popupFinishMessage();
                 }
 
-                try {
-                    String hash = getSeedListHash(buildString());
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-
-                startSelectImagesActivity();
             }
         });
 
-        ctv = (CustomTextView) findViewById(R.id.nextButtonTvId);
 
         Animation animation = new AlphaAnimation(0.0f, 1.0f);
         animation.setDuration(1000);
@@ -141,6 +155,8 @@ public class SeedListActivity extends AppCompatActivity {
         alert.setMessage("Enter a new word to replace the word '" + wordSelected + "'.");
         alert.setTitle("Make a change.");
 
+        alert.setIcon(android.R.drawable.ic_menu_edit);
+
         alert.setView(wordEditText);
 
         alert.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -154,7 +170,7 @@ public class SeedListActivity extends AppCompatActivity {
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-
+                //do nothing
             }
         });
 
@@ -168,6 +184,7 @@ public class SeedListActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Are you sure you want to go back?")
                     .setMessage("You will lose the data entered and you will need to enter the data again.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
                     .setNegativeButton(android.R.string.no, null)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
@@ -178,7 +195,7 @@ public class SeedListActivity extends AppCompatActivity {
                         }
                     }).create().show();
         } else {
-            finish();
+            popupFinishMessage();
         }
 
     }
@@ -349,13 +366,12 @@ public class SeedListActivity extends AppCompatActivity {
 
                 wordListToArrList(wordList);
             } else {
-                Toast.makeText(this, "Not enough shares.", Toast.LENGTH_LONG).show();
-                finish();
+                popupRetryMessage();
             }
         }
 
         else {
-            Toast.makeText(this, "No shares found.", Toast.LENGTH_LONG).show();
+            popupRetryMessage();
         }
 
     }
@@ -387,7 +403,49 @@ public class SeedListActivity extends AppCompatActivity {
     }
 
     public boolean isEnoughShares(){
-        return (ssh.size() == ssh.get(0).getRequiredShares());
+        return (ssh.size() >= ssh.get(0).getRequiredShares());
+    }
+
+    private void popupFinishMessage(){
+
+        new AlertDialog.Builder(this)
+                .setTitle("Important Information.")
+                .setMessage("Please delete any encoded images from the phone gallery. For security purposes do not keep the record of your encoded pictures on the phone.")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        finish();
+                    }
+                }).create().show();
+    }
+
+    private void popupRetryMessage(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setMessage("Would you like to try again?");
+        alert.setTitle("No shares found.");
+        alert.setIcon(android.R.drawable.ic_dialog_alert);
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                startSelectImagesActivityForRetry();
+            }
+        });
+
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                finish();
+            }
+        });
+
+        alert.show();
+    }
+
+    private void startSelectImagesActivityForRetry(){
+        Intent i = new Intent(this, SelectImagesActivity.class);
+        i.putExtra("callingActivity", "RecoverActivity");
+        startActivity(i);
+        finish();
     }
 
 }

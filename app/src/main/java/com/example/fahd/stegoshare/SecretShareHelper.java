@@ -1,3 +1,5 @@
+// By Nathan Morgenstern
+
 package com.example.fahd.stegoshare;
 
 import java.math.BigInteger;
