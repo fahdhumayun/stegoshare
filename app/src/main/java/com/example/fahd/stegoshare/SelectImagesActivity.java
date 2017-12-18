@@ -139,6 +139,7 @@ public class SelectImagesActivity extends AppCompatActivity {
 
         alert.show();
     }
+
     private void openGallery(){
         //request permission to read storage
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "stegoshareDB";
+    private static final String DB_NAME = "stegoshareDB_test_v2";
     private static final int DB_VER = 1;
 
 
@@ -37,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DB_LAST_USED_TABLE      = "dateTable";
     public static final String COLUMN_DATE_CREATED     = "date";
     public static final String COLUMN_HASH_OF_LIST     = "list_hash";
+    public static final String COLUMN_PASS_HASH        = "pass_hash";
     public static final String COLUMN_DATE_PRIMARY_KEY = "id";
 
     public DBHelper(Context context) {
@@ -67,7 +68,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "create table " + DB_LAST_USED_TABLE + " (" +
                         COLUMN_DATE_PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         COLUMN_HASH_OF_LIST + " TEXT," +
-                        COLUMN_DATE_CREATED + " TEXT)"
+                        COLUMN_DATE_CREATED + " TEXT," +
+                        COLUMN_PASS_HASH    + " TEXT)"
         );
 
         sqLiteDatabase.execSQL(query_3);
@@ -159,7 +161,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /* BEGIN DATABASE METHODS FOR DB_DATE_TABLE */
 
-    public void addShareInfo(String share, String hash){
+    public void addShareInfo(String share, String hash, String pass){
 
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
@@ -168,6 +170,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values.put(COLUMN_DATE_CREATED, share);
         values.put(COLUMN_HASH_OF_LIST, hash);
+        values.put(COLUMN_PASS_HASH, pass);
 
         db.insert(DB_LAST_USED_TABLE, // table
                 null, //nullColumnHack
@@ -233,6 +236,52 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return hash;
+    }
+
+    public Boolean hasPassword(){
+        //Get a readable reference to the database
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //+ DB_SHARES_TABLE + " WHERE date_id = (SELECT MAX(date_id) FROM sharesTable)";
+        //String strQuery = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id=?";
+        String strQuery   = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id = (SELECT MAX(id) FROM dateTable)";
+
+        Cursor cursor = db.rawQuery(strQuery,null);
+
+        String pass_hash = "";
+        if (cursor != null)
+            cursor.moveToFirst();
+        pass_hash = cursor.getString(0);
+
+        db.close();
+        cursor.close();
+
+        if(pass_hash.equals("NULL"))
+            return false;
+        else
+            return true;
+
+    }
+
+    public String  getPassword(){
+        //Get a readable reference to the database
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //+ DB_SHARES_TABLE + " WHERE date_id = (SELECT MAX(date_id) FROM sharesTable)";
+        //String strQuery = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id=?";
+        String strQuery   = "SELECT " + COLUMN_PASS_HASH + " FROM " + DB_LAST_USED_TABLE + " WHERE id = (SELECT MAX(id) FROM dateTable)";
+
+        Cursor cursor = db.rawQuery(strQuery,null);
+
+        String pass_hash = "";
+        if (cursor != null)
+            cursor.moveToFirst();
+        pass_hash = cursor.getString(0);
+
+        db.close();
+        cursor.close();
+
+        return pass_hash;
     }
 
     /*END DATABASE METHODS FOR DB_DATE_TABLE */

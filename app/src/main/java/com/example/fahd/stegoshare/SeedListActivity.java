@@ -1,4 +1,5 @@
 // By Fahd Humayun
+//Encryption and decryption popups implemented by Nathan Morgenstern
 
 package com.example.fahd.stegoshare;
 
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -16,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.jasypt.util.text.BasicTextEncryptor;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -34,6 +38,8 @@ public class SeedListActivity extends AppCompatActivity {
     int user_selected_shares_n;
     int user_selected_shares_m;
     private BigInteger prime;
+    private Boolean encryptShares = false;
+    private String  userPassword  = "NULL";
 
     private ListView wordsListView;
     private CustomAdapter ca;
@@ -103,11 +109,14 @@ public class SeedListActivity extends AppCompatActivity {
                 }
             });
         } else {
-            try {
-                handleRecoverList();
-                ca = new CustomAdapter(this, recoverSeedList);
-                wordsListView.setAdapter(ca);
-            }catch(Exception e){popupRetryMessage();}
+            DBHelper dbHelper = new DBHelper(this);
+
+            Log.v("LENGTH", "shareArrayList.get(0).split(\",\").length: " + shareArrayList.get(0).split(",").length);
+            if(shareArrayList.get(0).split(",").length < 4){
+                popupDecryptMessage();
+            }
+            else
+                handle();
         }
 
         nextButton.setOnClickListener(new View.OnClickListener(){
@@ -115,25 +124,7 @@ public class SeedListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(!recoverActivityFlag){
-                    SecretShare[] ss = buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
-                    try {
-                        addSharesToDatabase(ss);
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        String hash = getSeedListHash(buildString());
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-
-                    startSelectImagesActivity();
-                } else {
-                    popupFinishMessage();
-                }
-
+                popupEncryptMessage();
             }
         });
 
@@ -221,7 +212,7 @@ public class SeedListActivity extends AppCompatActivity {
         return res;
     }
 
-    public String getSeedListHash(String seedList) throws NoSuchAlgorithmException {
+    public String getHash(String seedList) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         md.update(seedList.getBytes(StandardCharsets.UTF_8 )); // Change this to "UTF-16" if needed
@@ -278,11 +269,17 @@ public class SeedListActivity extends AppCompatActivity {
         myDBHelper = new DBHelper(this);
 
         String date     = cal.getTime() + "";
-        String hashList = getSeedListHash(buildString());
-        myDBHelper.addShareInfo(date, hashList);
+        String hashList = getHash(buildString());
+        myDBHelper.addShareInfo(date, hashList, userPassword);
         //myDBHelper.addListHash(getSeedListHash(buildString()));
 
         int date_primarykey = myDBHelper.getDatePrimaryKey(date);
+
+        Boolean hasPass = myDBHelper.hasPassword();
+        if(hasPass)
+            Log.v("TEST", "IT HAS A PASSWORD");
+        else
+            Log.v("TEST", "IT DOESNT");
 
         for(SecretShare secret:ss)
             myDBHelper.addShare(shareBuilder(secret.getShare(),secret.getNumber(),
@@ -313,18 +310,6 @@ public class SeedListActivity extends AppCompatActivity {
                 String temp = new String(shares[randNum].getShare().toString());
                 SecretShare test = new SecretShare(temp + shares[randNum].getNumber());
 
-                /*BigInteger bg  = new BigInteger(temp + shares[randNum].getNumber());
-
-                String bg_str  = bg.toString();
-                char lastDigit     = bg.toString().charAt(bg.toString().length() - 1);
-                String removeConcate = bg.toString().substring(0,bg.toString().length() - 1);
-
-                System.out.println("lastDigit: " + lastDigit);
-                System.out.println("removeConcate: " + removeConcate);
-
-                System.out.println("BigInteger.toByteArray: " + shares[randNum].getShare().toByteArray());
-                System.out.println("The concatenated.toByteArray: " + bg.toByteArray());
-                */
                 closedList.add(randNum);
                 ss_arr_list.add(shares[randNum]);
             }
@@ -344,10 +329,17 @@ public class SeedListActivity extends AppCompatActivity {
 
     private ArrayList<SecretShareHelper> ssh;
     private SecretShare[] secretShareArray;
+
+    public void handle(){
+        try {
+            handleRecoverList();
+            ca = new CustomAdapter(this, recoverSeedList);
+            wordsListView.setAdapter(ca);
+        }catch(Exception e){popupRetryMessage();}
+    }
+
     public void handleRecoverList(){
-
         //TODO split the share
-
         ssh = new ArrayList<SecretShareHelper>();
         for(int i = 0; i < shareArrayList.size(); i++){
             Log.v("TEST", "shareArrayList Item at " + i + " " + shareArrayList.get(0));
@@ -385,7 +377,6 @@ public class SeedListActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     public ArrayList<SecretShare> getSecretShares(){
         ArrayList<SecretShare> secretSharesArrayList = new ArrayList<SecretShare>();
@@ -443,11 +434,115 @@ public class SeedListActivity extends AppCompatActivity {
         alert.show();
     }
 
+
+    private void popupEncryptMessage(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("Enter password below or select no to skip");
+        alert.setTitle("Encrypt Secret Shares?");
+
+        final EditText edittext = new EditText(this);
+
+        alert.setView(edittext);
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                //OR
+                String textValue = edittext.getText().toString();
+
+                if(!textValue.equals("")) {
+                    encryptShares = true;
+                    try {
+                        userPassword = getHash(textValue);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                    onFinish();
+                }
+            }
+        });
+
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                onFinish();
+            }
+        });
+        final AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    private void popupDecryptMessage(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("Enter password below");
+
+        final EditText edittext = new EditText(this);
+
+        alert.setView(edittext);
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                //OR
+                String textValue = edittext.getText().toString();
+
+                if(!textValue.equals("")) {
+                    try {
+                        userPassword = getHash(textValue);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+
+                        try {
+                            shareArrayList = decryptMessage(shareArrayList,getHash(textValue));
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                   handle();
+            }
+        });
+
+        final AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    public void onFinish(){
+        if(!recoverActivityFlag){
+            SecretShare[] ss = buildShares(buildString(),user_selected_shares_n,user_selected_shares_m);
+            try {
+                addSharesToDatabase(ss);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                String hash = getHash(buildString());
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            startSelectImagesActivity();
+
+        } else {
+            popupFinishMessage();
+        }
+    }
+
     private void startSelectImagesActivityForRetry(){
         Intent i = new Intent(this, SelectImagesActivity.class);
         i.putExtra("callingActivity", "RecoverActivity");
         startActivity(i);
         finish();
     }
+
+    private ArrayList<String> decryptMessage(ArrayList<String> encryptedList, String pass){
+        BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
+        textEncryptor.setPassword(pass);
+        ArrayList<String> plainTextList  = new ArrayList<String>();
+
+        for(int i = 0; i < encryptedList.size(); i++)
+            plainTextList.add(textEncryptor.decrypt(encryptedList.get(i)));
+
+        return plainTextList;
+    }
+
+
 
 }
