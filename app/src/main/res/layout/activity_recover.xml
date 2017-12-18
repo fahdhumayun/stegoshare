@@ -1,11 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.fahd.stegoshare.RecoverActivity"
-    android:background="@drawable/app_bg_new"
+    android:orientation="vertical"
+    android:background="@color/colorBlack"
     >
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:id="@+id/id_recoveryStepsImageView"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/recovery_steps_1"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.2"
+        >
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_skipButton"
+            android:background="@drawable/skip_button"
+            android:clickable="true"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_nextStepButton"
+            android:background="@drawable/next_step_button"
+            android:layout_marginLeft="100dp"
+            android:clickable="true"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            />
+
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

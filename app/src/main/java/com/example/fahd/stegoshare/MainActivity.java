@@ -5,8 +5,10 @@ package com.example.fahd.stegoshare;
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                startRecoverActivity();
+                popupRecoveryMessage();
             }
         });
     }
@@ -172,6 +174,33 @@ public class MainActivity extends AppCompatActivity {
     private void startRecoverActivity(){
         Intent i = new Intent(this, RecoverActivity.class);
         startActivity(i);
+    }
+
+    public void startSelectImagesActivity(){
+        Intent i = new Intent(this, SelectImagesActivity.class);
+        i.putExtra("callingActivity", "RecoverActivity");
+        startActivity(i);
+    }
+
+    private void popupRecoveryMessage(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setMessage("Would you like to look at the steps?");
+        alert.setTitle("Tutorial");
+        alert.setIcon(android.R.drawable.ic_dialog_info);
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                startRecoverActivity();
+            }
+        });
+
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                startSelectImagesActivity();
+            }
+        });
+
+        alert.show();
     }
 
 }
