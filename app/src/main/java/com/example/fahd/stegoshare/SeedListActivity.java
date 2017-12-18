@@ -103,9 +103,11 @@ public class SeedListActivity extends AppCompatActivity {
                 }
             });
         } else {
-            handleRecoverList();
-            ca = new CustomAdapter(this, recoverSeedList);
-            wordsListView.setAdapter(ca);
+            try {
+                handleRecoverList();
+                ca = new CustomAdapter(this, recoverSeedList);
+                wordsListView.setAdapter(ca);
+            }catch(Exception e){popupRetryMessage();}
         }
 
         nextButton.setOnClickListener(new View.OnClickListener(){

@@ -3,12 +3,14 @@
 package com.example.fahd.stegoshare;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -102,8 +104,11 @@ public class SelectImagesActivity extends AppCompatActivity {
                     startActivity(uploadIntent);
                 } else if (imagesPathList != null && !imagesPathList.isEmpty() && recoverActivityFlag) {
                     //TODO start recoverSeedListActivity
-                    decoding();
-                    startRecoverSeedListActivity();
+                    try {
+                        decoding();
+                        startRecoverSeedListActivity();
+                    }catch(Exception e){popupRetryMessage();}
+
 
                 } else {
                     //TODO when nothing selected
@@ -113,6 +118,27 @@ public class SelectImagesActivity extends AppCompatActivity {
 
     }
 
+    private void popupRetryMessage(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setMessage("Would you like to try again?");
+        alert.setTitle("No shares found.");
+        alert.setIcon(android.R.drawable.ic_dialog_alert);
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //startSelectImagesActivityForRetry();
+                return;
+            }
+        });
+
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                finish();
+            }
+        });
+
+        alert.show();
+    }
     private void openGallery(){
         //request permission to read storage
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)

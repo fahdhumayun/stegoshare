@@ -10,7 +10,7 @@
         android:id="@+id/id_ListViewWordItem"
         android:hint="Words"
         android:textColor="@color/colorWhite"
-        android:background="@color/colorTeal"
+        android:background="@color/colorBlack"
         android:gravity="center"
         android:padding="10dp"
         />
