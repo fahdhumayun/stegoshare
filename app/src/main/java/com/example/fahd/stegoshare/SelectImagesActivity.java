@@ -179,7 +179,7 @@ public class SelectImagesActivity extends AppCompatActivity {
                 lp.setMargins(10, 10, 10, 20);
                 imageView.setLayoutParams(lp);
                 lnrImages.addView(imageView);
-                nextButton.setImageResource(R.drawable.next_button);
+                nextButton.setImageResource(R.drawable.next_step_button);
                 ctv.setText("Tap on the GALLERY button to replace the images.");
             }
         }

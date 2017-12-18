@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@android:drawable/sym_action_email"
-                android:backgroundTint="@color/colorAppRed"
+                android:backgroundTint="@color/colorTeal"
                 />
 
             <com.example.fahd.stegoshare.CustomTextView
