@@ -1,6 +1,6 @@
 // By Guy Rubinstein
 // The other methods actually implemented in this activity by Guy has been transferred
-// to the SteganographyAsyncTask for asynchronous execution of the encoding.
+// to the SteganographyAsyncTask.java for asynchronous execution of the encoding.
 
 package com.example.fahd.stegoshare;
 
