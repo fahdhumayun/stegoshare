@@ -246,6 +246,7 @@ public class SeedActivity extends AppCompatActivity {
             i.putExtra("recoverActivityFlag", false);
 
             startActivity(i);
+            finish();
         }
         else if(!(user_selected_shares_m <= user_selected_shares_n))
             showToast("Required shares should be less than or equal to total shares.");

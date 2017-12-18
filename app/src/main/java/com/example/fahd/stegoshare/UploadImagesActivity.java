@@ -30,15 +30,7 @@ import java.util.ArrayList;
 
 public class UploadImagesActivity extends AppCompatActivity {
 
-    private GridView grdImages;
-
-    private ImageAdapter imageAdapter;
     private ArrayList<String> imagePaths;
-    private int count;
-    private boolean[] thumbnailsselection;
-    private int ids[];
-
-    private ArrayList<String> tempImagePaths;
     private ArrayList<String> sharesList;
     private DBHelper dbHelper;
 
@@ -60,117 +52,6 @@ public class UploadImagesActivity extends AppCompatActivity {
         SteganographyAsyncTask asyncTask = new SteganographyAsyncTask(this, sharesList, imagePaths);
         asyncTask.execute();
 
-
     }
 
-    private void share(){
-        final int len = thumbnailsselection.length;
-        ArrayList<String> selectedImagePaths = new ArrayList<>();
-        for (int i = 0; i < len; i++) {
-            if (thumbnailsselection[i]) {
-                selectedImagePaths.add(imagePaths.get(i));
-            }
-        }
-        if (!selectedImagePaths.isEmpty()) {
-            ArrayList<Uri> selectedImageUris = new ArrayList<>();
-            for (String path : selectedImagePaths){
-                selectedImageUris.add(FileProvider.getUriForFile(this,
-                        "com.example.fahd.stegoshare.fileprovider", // <-- changed this
-                        new File(path)));
-            }
-
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-            shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, selectedImageUris);
-            shareIntent.setType("image/*");
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(Intent.createChooser(shareIntent, "Send..."));
-        }
-        if (selectedImagePaths.isEmpty()) {
-            Toast.makeText(this, "Please select the images to be uplaoded/stored.", Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    private void cleanup(){
-        this.deleteDatabase("stegoshareDB"); //delete database
-
-        // delete all of the temporary encoded files
-        for(int i = 0; i < imagePaths.size(); i++){
-            File file = new File(imagePaths.get(i));
-            if (file.exists()) {
-                file.delete();
-            }
-        }
-
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent); //return to MainActivity
-    }
-
-    private void encoding(){
-
-        requestPermission(this);
-
-        for(int i = 0; i < imagePaths.size(); i++){
-            File file = new File(imagePaths.get(i));
-            Log.v("TEST", "encoding file: " + file);
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-            String share = sharesList.get(i);
-            Log.v("TEST", "share " + (i+1) + " " + share);
-            byte[] bytes = share.getBytes();
-            Bitmap tempBitmap = BitmapEncoder.encode(bitmap, bytes);
-            Log.v("TEST", "encoding bitmap: " + bitmap);
-            saveImageTemporary(tempBitmap, i+1);
-        }
-
-        /*
-        File file = new File(imagePaths.get(0));
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-        String share = "Hello this is the share.";
-        byte[] bytes = share.getBytes();
-        Bitmap bitmap1 = BitmapEncoder.encode(bitmap, bytes);
-        byte[] returnBytes = BitmapEncoder.decode(bitmap1);
-        String retrievedShare = new String(returnBytes);
-
-        Log.v("TEST", "retreivedShare: " + retrievedShare);
-        */
-    }
-
-    private void saveImageTemporary(Bitmap tempBitmap, int imageNumber){
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root);
-        myDir.mkdirs();
-        String fname = "ImageEncoded-"+imageNumber+".png";
-        File file = new File(myDir, fname);
-        if (file.exists()) {
-            file.delete();
-        }
-        //Log.i("LOAD", root + fname);
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            tempBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            Log.v("TEST", "saving file: " + file);
-            Log.v("TEST", "saving bitmap: " + tempBitmap);
-            tempImagePaths.add(file.toString());
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static final int REQUEST_WRITE_STORAGE = 112;
-
-    private void requestPermission(Activity context) {
-        boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-        if (!hasPermission) {
-            ActivityCompat.requestPermissions(context,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_WRITE_STORAGE);
-        } else {
-            //requestPermission(this);
-        }
-    }
 }
