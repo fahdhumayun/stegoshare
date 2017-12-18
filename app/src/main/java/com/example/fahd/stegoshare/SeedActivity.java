@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,7 +22,7 @@ import java.util.Arrays;
 
 public class SeedActivity extends AppCompatActivity {
 
-    int SEED_SIZE;
+    int SEED_SIZE = 3;
     int counter;
 
     int user_selected_shares_n;
@@ -63,8 +64,12 @@ public class SeedActivity extends AppCompatActivity {
 
         user_selected_shares_m = 2;
         user_selected_shares_n = 2;
-
-        setAdapters();
+        if (savedInstanceState != null) {
+            user_selected_shares_m = savedInstanceState.getInt("user_selected_shares_m");
+            user_selected_shares_n = savedInstanceState.getInt("user_selected_shares_n");
+            SEED_SIZE              = savedInstanceState.getInt("SEED_SIZE");
+            System.out.println("SEED_SIZE: " + SEED_SIZE);
+        }
 
         confirmButton.setOnClickListener(new View.OnClickListener(){
 
@@ -73,6 +78,40 @@ public class SeedActivity extends AppCompatActivity {
                 onConfirm(view);
             }
         });
+
+
+        setAdapters();
+        if (savedInstanceState != null)
+        {
+            seedWord.setText(savedInstanceState.getString("seedWord"));
+            seedList = savedInstanceState.getStringArray("seedList");
+            counter  = savedInstanceState.getInt("counter");
+
+            Log.v("SEED ACTIVITY", "Counter: " + counter);
+            Log.v("SEED ACTIVITY", "m: " + user_selected_shares_m);
+            Log.v("SEED ACTIVITY", "n: " + user_selected_shares_n);
+
+            seedCount.setText(counter + ".");
+            seedWord.setHint("word " + counter);
+
+            setButtonVisibility();
+        }
+        else
+            initialize(SEED_SIZE);
+
+    }
+
+    @Override
+    public void onSaveInstanceState (Bundle outState)
+    {
+        Log.v("SeedActivity", "SavedInstance Called");
+        outState.putString("seedWord", seedWord.getText().toString());
+        outState.putStringArray("seedList", seedList);
+        outState.putInt("counter", counter);
+        outState.putInt("user_selected_shares_m", user_selected_shares_m);
+        outState.putInt("user_selected_shares_n", user_selected_shares_n);
+        outState.putInt("SEED_SIZE", SEED_SIZE);
+        super.onSaveInstanceState(outState);
     }
 
     public void setAdapters(){
@@ -81,12 +120,12 @@ public class SeedActivity extends AppCompatActivity {
         //String Arrays
         String[] totalWordsArray     = res.getStringArray(R.array.total_words_array);
         String[] totalSharesArray    = res.getStringArray(R.array.total_shares_array);
-        String[] requiredSharesARray = res.getStringArray(R.array.required_shares_array);
+        String[] requiredSharesArray = res.getStringArray(R.array.required_shares_array);
 
         // Getting the arrays in array list format for the adapters
         ArrayList<String> wordsArrayList          = new ArrayList<String>(Arrays.asList(totalWordsArray));
         ArrayList<String> totalSharesArrayList    = new ArrayList<String>(Arrays.asList(totalSharesArray));
-        ArrayList<String> requiredSharesArrayList = new ArrayList<String>(Arrays.asList(requiredSharesARray));
+        ArrayList<String> requiredSharesArrayList = new ArrayList<String>(Arrays.asList(requiredSharesArray));
 
         ArrayAdapter<String> wordsAdapter;
         ArrayAdapter<String> totalSharesAdapter;
@@ -99,55 +138,22 @@ public class SeedActivity extends AppCompatActivity {
                 this, android.R.layout.simple_spinner_item, totalSharesArrayList);
 
         requiredSharesAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, requiredSharesARray);
+                this, android.R.layout.simple_spinner_item, requiredSharesArrayList);
 
 
         //Adding action listeners
-        totalWords.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
-                Log.v("WORDS", "Change detected! Selected: " + totalWords.getItemAtPosition(position).toString() );
-                initialize(Integer.parseInt(totalWords.getItemAtPosition(position).toString()));
-                setButtonVisibility();
-            }
+        TotalWordsSpinnerInteractionListener t_listener     = new TotalWordsSpinnerInteractionListener();
+        totalWords.setOnTouchListener(t_listener);
+        totalWords.setOnItemSelectedListener(t_listener);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
+        RequiredSharesSpinnerInteractionListener r_listener = new RequiredSharesSpinnerInteractionListener();
+        requiredShares.setOnTouchListener(r_listener);
+        requiredShares.setOnItemSelectedListener(r_listener);
 
-        });
+        TotalSharesSpinnerInteractionListener ts_listener   = new TotalSharesSpinnerInteractionListener();
+        totalShares.setOnTouchListener(ts_listener);
+        totalShares.setOnItemSelectedListener(ts_listener);
 
-        totalShares.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
-                Log.v("TOT_SHARES", "Change detected! Selected: " + totalShares.getItemAtPosition(position).toString() );
-                user_selected_shares_n = Integer.parseInt(requiredShares.getItemAtPosition(position).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
-        });
-
-        requiredShares.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
-                Log.v("REQ_SHARES", "Change detected! Selected: " + requiredShares.getItemAtPosition(position).toString() );
-                user_selected_shares_m = Integer.parseInt(requiredShares.getItemAtPosition(position).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
-        });
 
 
         totalWords.setAdapter(wordsAdapter);
@@ -265,5 +271,82 @@ public class SeedActivity extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    public class TotalSharesSpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+
+        boolean userSelect = false;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            userSelect = true;
+            return false;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            if (userSelect) {
+                Log.v("TOT_SHARES", "Change detected! Selected: " + totalShares.getItemAtPosition(position).toString());
+                user_selected_shares_n = Integer.parseInt(totalShares.getItemAtPosition(position).toString());
+                userSelect = false;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+
+    }
+
+    public class RequiredSharesSpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+
+        boolean userSelect = false;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            userSelect = true;
+            return false;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (userSelect) {
+                Log.v("REQ_SHARES", "Change detected! Selected: " + requiredShares.getItemAtPosition(position).toString() );
+                user_selected_shares_m = Integer.parseInt(requiredShares.getItemAtPosition(position).toString());
+                userSelect = false;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+
+    }
+
+    public class TotalWordsSpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+        boolean userSelect = false;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            userSelect = true;
+            return false;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (userSelect) {
+                Log.v("WORDS", "Change detected! Selected: " + totalWords.getItemAtPosition(position).toString() );
+                initialize(Integer.parseInt(totalWords.getItemAtPosition(position).toString()));
+                setButtonVisibility();
+                userSelect = false;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
     }
 }
