@@ -146,7 +146,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.v("SecretShareList", "hash: " + hash);
             do {
                 Log.v("SecretShareList",hash + ","  + cursor.getString(2));
-                shareList.add(hash + cursor.getString(2));
+                shareList.add(hash + ","  +  cursor.getString(2));
             } while (cursor.moveToNext());
         }
         db.close();

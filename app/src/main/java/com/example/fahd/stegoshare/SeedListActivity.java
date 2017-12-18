@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -94,6 +95,8 @@ public class SeedListActivity extends AppCompatActivity {
             });
         } else {
             handleRecoverList();
+            ca = new CustomAdapter(this, recoverSeedList);
+            wordsListView.setAdapter(ca);
         }
 
         nextButton.setOnClickListener(new View.OnClickListener(){
@@ -333,20 +336,27 @@ public class SeedListActivity extends AppCompatActivity {
         }
 
         if(isValidHash()){
-            secretShareArray = getSecretShares().toArray(new SecretShare[ssh.size()]);
-            Shamir shamir = new Shamir();
-            BigInteger result = shamir.combine(secretShareArray, ssh.get(0).getPrime());
 
-            System.out.println("result: " + result);
-            byte[] byteArr = result.toByteArray();
-            String wordList = new String(byteArr);
+            if(isEnoughShares()) {
 
-            wordListToArrList(wordList);
+                secretShareArray = getSecretShares().toArray(new SecretShare[ssh.size()]);
+                Shamir shamir = new Shamir();
+                BigInteger result = shamir.combine(secretShareArray, ssh.get(0).getPrime());
+
+                System.out.println("result: " + result);
+                byte[] byteArr = result.toByteArray();
+                String wordList = new String(byteArr);
+
+                wordListToArrList(wordList);
+            } else {
+                Toast.makeText(this, "Not enough shares.", Toast.LENGTH_LONG).show();
+                finish();
+            }
         }
 
-        else
-            System.out.println("Hello");
-
+        else {
+            Toast.makeText(this, "No shares found.", Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -374,6 +384,10 @@ public class SeedListActivity extends AppCompatActivity {
         String[] recover = wordList.split("\n");
 
         recoverSeedList = new ArrayList<String>(Arrays.asList(recover));
+    }
+
+    public boolean isEnoughShares(){
+        return (ssh.size() == ssh.get(0).getRequiredShares());
     }
 
 }

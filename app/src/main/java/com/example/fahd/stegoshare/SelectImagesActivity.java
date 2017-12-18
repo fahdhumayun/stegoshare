@@ -53,6 +53,7 @@ public class SelectImagesActivity extends AppCompatActivity {
 
         if(callingActivity.equals("RecoverActivity")){
             recoverActivityFlag = true;
+            shareArrayList = new ArrayList<String>();
             handleRecoverActivity();
         } else {
 
@@ -194,7 +195,9 @@ public class SelectImagesActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
             Log.v("TEST", "decoding bitmap: " + bitmap);
             byte[] returnBytes = BitmapEncoder.decode(bitmap);
+            Log.v("TEST", "decoding returnBytes: " + returnBytes);
             String retrievedShare = new String(returnBytes);
+            Log.v("TEST", "decoding retreivedShare: " + retrievedShare);
             shareArrayList.add(retrievedShare);
             Log.v("TEST", "decoding retrievedShare: " + retrievedShare);
         }
@@ -206,7 +209,7 @@ public class SelectImagesActivity extends AppCompatActivity {
         Intent i = new Intent(this, SeedListActivity.class); // line 247
 
         i.putExtra("shareArrayList", shareArrayList);
-        i.putExtra("recoverActivityFlag", false);
+        i.putExtra("recoverActivityFlag", true);
 
         startActivity(i);
     }
