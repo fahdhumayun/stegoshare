@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -428,7 +429,6 @@ public class SeedListActivity extends AppCompatActivity {
         alert.show();
     }
 
-
     private void popupEncryptMessage(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setMessage("Enter password below or select no to skip");
@@ -537,7 +537,5 @@ public class SeedListActivity extends AppCompatActivity {
         }
         return plainTextList;
     }
-
-
 
 }
