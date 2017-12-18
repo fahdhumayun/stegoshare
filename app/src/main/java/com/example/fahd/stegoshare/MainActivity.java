@@ -8,6 +8,7 @@ import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,9 @@ Variables:
     i. tapAnyTextView: TextView
     ii. hideImageButton: ImageButton
     iii. recoverImageButton: ImageButton
+    iv. radioGroup: RadioGroup
+    v. onRadioBtn, offRadioBtn: RadioButton
+    vi. isHelpOn: Boolean
 
 Methods:
 1. Private:
@@ -51,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tapAnyTextView;
     private ImageButton hideImageButton;
     private ImageButton recoverImageButton;
+    private RadioGroup radioGroup;
+    private RadioButton onRadioBtn, offRadioBtn;
+    private Boolean isHelpOn;
 
     /*
     onCreate() method
@@ -68,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                startHideActivity();
+
+                if(isHelpOn){
+                    startHideActivity();
+                } else {
+                    startSeedActivity();
+                }
             }
         });
 
@@ -76,7 +90,33 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                popupRecoveryMessage();
+                if(isHelpOn){
+                    startRecoverActivity();
+                } else {
+                    startSelectImagesActivity();
+                }
+            }
+        });
+
+        isHelpOn = false;
+        radioGroup.check(R.id.id_offRadioButton);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                switch(i){
+                    case R.id.id_onRadioButton: {
+                        isHelpOn = true;
+
+                        break;
+                    }
+                    case R.id.id_offRadioButton: {
+                        isHelpOn = false;
+                        break;
+                    }
+                    default:
+                        isHelpOn = false;
+                }
             }
         });
     }
@@ -121,6 +161,10 @@ public class MainActivity extends AppCompatActivity {
 
         hideImageButton = (ImageButton) findViewById(R.id.id_hide_imageButton);
         recoverImageButton = (ImageButton) findViewById(R.id.id_recover_imageButton);
+
+        radioGroup = (RadioGroup) findViewById(R.id.id_radioGroup);
+        onRadioBtn = (RadioButton) findViewById(R.id.id_onRadioButton);
+        offRadioBtn = (RadioButton) findViewById(R.id.id_onRadioButton);
     }
 
     /*
@@ -152,10 +196,8 @@ public class MainActivity extends AppCompatActivity {
     void
      */
 
-    private void startHideActivity(){
-        //Intent i = new Intent(this, HideActivity.class);
+    private void startSeedActivity(){
         Intent i = new Intent(this, SeedActivity.class);
-        //Intent i = new Intent(this, SelectImagesActivity.class);
         startActivity(i);
     }
 
@@ -176,31 +218,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void startSelectImagesActivity(){
+    private void startSelectImagesActivity(){
         Intent i = new Intent(this, SelectImagesActivity.class);
         i.putExtra("callingActivity", "RecoverActivity");
         startActivity(i);
     }
 
-    private void popupRecoveryMessage(){
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setMessage("Would you like to look at the steps?");
-        alert.setTitle("Tutorial");
-        alert.setIcon(android.R.drawable.ic_dialog_info);
-        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                startRecoverActivity();
-            }
-        });
-
-        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                startSelectImagesActivity();
-            }
-        });
-
-        alert.show();
+    private void startHideActivity(){
+        Intent i = new Intent(this, HideActivity.class);
+        startActivity(i);
     }
 
 }

@@ -39,6 +39,7 @@
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:textStyle="bold"
+        android:textSize="14dp"
         android:textColor="@color/colorWhite"
         android:fontFamily="monospace"
         android:id="@+id/id_tapAny_textView"
@@ -76,6 +77,56 @@
             android:clickable="true"
             android:layout_marginBottom="10dp"
             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.example.fahd.stegoshare.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_radioGroupTextView"
+            android:text="HELP: "
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:layout_marginRight="10dp"
+            />
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_radioGroup"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/id_onRadioButton"
+                    android:text="ON"
+                    android:layout_marginRight="10dp"
+                    />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/id_offRadioButton"
+                    android:text="OFF"
+                    />
+
+            </LinearLayout>
+
+
+
+
+        </RadioGroup>
+
 
     </LinearLayout>
 

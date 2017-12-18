@@ -6,11 +6,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -36,7 +36,8 @@
         <activity android:name=".SelectImagesActivity" />
         <activity android:name=".CustomPhotoGalleryActivity" />
         <activity android:name=".UploadImagesActivity" />
-        <activity android:name=".SeedListActivity"></activity>
+        <activity android:name=".SeedListActivity" />
+        <activity android:name=".HideActivity"></activity>
     </application>
 
 </manifest>
