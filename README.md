@@ -1,6 +1,7 @@
 # stegoshare
 
-Motivation
+Motivation:
+
 The goal behind our app was to create a simple yet powerful tool for crypto currency users, both novice and
 more experienced. The majority of wallets provide a backup mnemonics passphrase, also known as a seed,
 to the user when they first create their wallet. These mnemonic passphrase’s are used to deterministically
@@ -14,7 +15,9 @@ disasters, home invasions. With the surge of interest in crypto there have conse
 robberies as well as people coming out announcing they lost X bitcoins on an old hard drive. Stegoshares
 provides a safe and convenient way of distributing ones seed for later use.
 
-Our Solution
+Our Solution:
+
+
 Stegoshare provides a trustless, and simple way to store crypto currency seeds in the form of multiple pictures.
 We believe that remembering pictures is inherently easier then remembering a string of unconnected words.
 These pictures store shares using shamirs secret sharing algorithm that allow for the recovery of the original
